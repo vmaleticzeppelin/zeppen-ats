@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Plus, FileText, Phone, Trash2, PlayCircle } from 'lucide-react';
 import AddCandidateModal from '../components/AddCandidateModal';
+import { useAuth } from '../context/AuthContext';
 import { useCandidates } from '../context/CandidateContext';
 import './Candidates.css';
 
@@ -14,6 +15,7 @@ const getStatusBadgeClass = (status: string) => {
 
 const Candidates: React.FC = () => {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Svi');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,14 +137,16 @@ const Candidates: React.FC = () => {
                       }}>
                         <FileText size={18} />
                       </button>
-                      <button className="action-btn" title="Obriši" onClick={(e) => {
-                        e.stopPropagation();
-                        if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
-                          deleteCandidate(c.id);
-                        }
-                      }}>
-                        <Trash2 size={18} style={{color: 'var(--danger)'}} />
-                      </button>
+                      {currentUser === 'Admin' && (
+                        <button className="action-btn" title="Obriši" onClick={(e) => {
+                          e.stopPropagation();
+                          if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
+                            deleteCandidate(c.id);
+                          }
+                        }}>
+                          <Trash2 size={18} style={{color: 'var(--danger)'}} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

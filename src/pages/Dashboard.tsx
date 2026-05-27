@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, UserCheck, UserX, Target, Briefcase, TrendingUp 
@@ -7,11 +7,47 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
-import { statsData, pipelineData, topCandidates, scoreRadarData } from '../data/mockData';
+import { scoreRadarData } from '../data/mockData';
+import { useCandidates } from '../context/CandidateContext';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { candidates } = useCandidates();
+
+  const stats = useMemo(() => {
+    const active = candidates.filter(c => c.status !== 'Odbijen' && c.status !== 'Zaposlen').length;
+    const finalRound = candidates.filter(c => c.status === 'Finalni krug').length;
+    const trial = candidates.filter(c => c.status === 'Probni rad').length;
+    const rejected = candidates.filter(c => c.status === 'Odbijen').length;
+
+    const pipelineCounts = {
+      'Neocenjen': 0,
+      'Prvi krug': 0,
+      'Drugi krug': 0,
+      'Finalni krug': 0,
+      'Ponuda': 0
+    };
+
+    candidates.forEach(c => {
+      if (pipelineCounts.hasOwnProperty(c.status)) {
+        pipelineCounts[c.status as keyof typeof pipelineCounts]++;
+      }
+    });
+
+    const pipelineData = Object.keys(pipelineCounts).map(key => ({
+      name: key,
+      value: pipelineCounts[key as keyof typeof pipelineCounts]
+    }));
+
+    const top = [...candidates]
+      .filter(c => c.score !== null)
+      .sort((a, b) => (b.score || 0) - (a.score || 0))
+      .slice(0, 5);
+
+    return { active, finalRound, trial, rejected, pipelineData, top };
+  }, [candidates]);
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -27,7 +63,7 @@ const Dashboard: React.FC = () => {
             <Users size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-value">{statsData.activeCandidates}</span>
+            <span className="stat-value">{stats.active}</span>
             <span className="stat-label">Aktivnih kandidata</span>
           </div>
         </div>
@@ -37,7 +73,7 @@ const Dashboard: React.FC = () => {
             <Target size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-value">{statsData.finalRound}</span>
+            <span className="stat-value">{stats.finalRound}</span>
             <span className="stat-label">U finalnom krugu</span>
           </div>
         </div>
@@ -47,7 +83,7 @@ const Dashboard: React.FC = () => {
             <Briefcase size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-value">{statsData.trial}</span>
+            <span className="stat-value">{stats.trial}</span>
             <span className="stat-label">Na probnom radu</span>
           </div>
         </div>
@@ -57,7 +93,7 @@ const Dashboard: React.FC = () => {
             <UserX size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-value">{statsData.rejected}</span>
+            <span className="stat-value">{stats.rejected}</span>
             <span className="stat-label">Odbijeno (poslednjih 30 dana)</span>
           </div>
         </div>
@@ -69,7 +105,7 @@ const Dashboard: React.FC = () => {
             <h3>Pipeline Selekcije</h3>
             <div className="chart-container">
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={pipelineData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <BarChart data={stats.pipelineData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#383D47" />
                   <XAxis dataKey="name" stroke="#A0A5B1" />
                   <YAxis stroke="#A0A5B1" />
@@ -105,17 +141,21 @@ const Dashboard: React.FC = () => {
               <button className="btn-text">Vidi sve</button>
             </div>
             <div className="candidate-list">
-              {topCandidates.map(c => (
+              {stats.top.length > 0 ? stats.top.map(c => (
                 <div key={c.id} className="candidate-item">
                   <div className="c-info">
                     <span className="c-name">{c.name}</span>
-                    <span className="c-phase">{c.phase}</span>
+                    <span className="c-phase">{c.status}</span>
                   </div>
                   <div className="c-score">
                     <span className="score-badge">{c.score}%</span>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div style={{ color: '#A0A5B1', padding: '1rem', textAlign: 'center' }}>
+                  Nema neocenjenih kandidata
+                </div>
+              )}
             </div>
           </div>
         </div>
