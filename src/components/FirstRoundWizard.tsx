@@ -24,12 +24,13 @@ const STEPS = [
   "10. Finalna Procena"
 ];
 
-const FirstRoundWizard: React.FC = () => {
+interface FirstRoundWizardProps {
+  candidateId: string | number;
+}
+
+const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
   const { currentUser } = useAuth();
-  const { saveEvaluation, getEvaluation, evaluations } = useEvaluations();
-  
-  // Pretpostavićemo da gledamo kandidata sa ID = "kandidat-1"
-  const candidateId = "kandidat-1";
+  const { saveEvaluation, getEvaluation } = useEvaluations();
 
   const [step, setStep] = useState(0);
   const [scores, setScores] = useState<Record<string, number>>({});
@@ -41,7 +42,7 @@ const FirstRoundWizard: React.FC = () => {
   // Učitaj prethodne podatke kada se promeni korisnik
   useEffect(() => {
     if (currentUser === 'Branislav' || currentUser === 'Dusan') {
-      const existing = getEvaluation(candidateId, currentUser);
+      const existing = getEvaluation(String(candidateId), currentUser);
       if (existing) {
         setScores(existing.scores || {});
         setNotes(existing.notes || {});
@@ -49,12 +50,12 @@ const FirstRoundWizard: React.FC = () => {
         setRecommendation(existing.recommendation || null);
       }
     }
-  }, [currentUser]);
+  }, [currentUser, candidateId]);
 
   // Ako je ulogovan Admin, renderujemo drugi ekran
   if (currentUser === 'Admin') {
-    const branislav = getEvaluation(candidateId, 'Branislav');
-    const dusan = getEvaluation(candidateId, 'Dusan');
+    const branislav = getEvaluation(String(candidateId), 'Branislav');
+    const dusan = getEvaluation(String(candidateId), 'Dusan');
     return <AdminFirstRoundView branislavData={branislav} dusanData={dusan} />;
   }
 
@@ -67,7 +68,7 @@ const FirstRoundWizard: React.FC = () => {
 
   const handleSaveAll = () => {
     if (currentUser === 'Branislav' || currentUser === 'Dusan') {
-      saveEvaluation(candidateId, currentUser, { scores, notes, redFlags, recommendation });
+      saveEvaluation(String(candidateId), currentUser, { scores, notes, redFlags, recommendation });
       alert('Uspešno sačuvano za: ' + currentUser);
     }
   };

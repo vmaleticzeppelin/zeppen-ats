@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { collection, doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase/config';
 
 // Struktura ocena jednog korisnika
 export interface EvaluationData {
@@ -19,31 +21,31 @@ interface CandidateEvaluations {
 
 interface EvalContextType {
   evaluations: CandidateEvaluations;
-  saveEvaluation: (candidateId: string, evaluator: 'Branislav' | 'Dusan', data: EvaluationData) => void;
+  saveEvaluation: (candidateId: string, evaluator: 'Branislav' | 'Dusan', data: EvaluationData) => Promise<void>;
   getEvaluation: (candidateId: string, evaluator: 'Branislav' | 'Dusan') => EvaluationData | undefined;
 }
 
 const EvalContext = createContext<EvalContextType | undefined>(undefined);
 
 export const EvalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [evaluations, setEvaluations] = useState<CandidateEvaluations>(() => {
-    const saved = localStorage.getItem('zeppelin_evaluations');
-    if (saved) return JSON.parse(saved);
-    return {};
-  });
+  const [evaluations, setEvaluations] = useState<CandidateEvaluations>({});
 
   useEffect(() => {
-    localStorage.setItem('zeppelin_evaluations', JSON.stringify(evaluations));
-  }, [evaluations]);
+    const unsub = onSnapshot(collection(db, 'evaluations'), (snapshot) => {
+      const fetched: CandidateEvaluations = {};
+      snapshot.forEach(doc => {
+        fetched[doc.id] = doc.data() as any;
+      });
+      setEvaluations(fetched);
+    });
+    return () => unsub();
+  }, []);
 
-  const saveEvaluation = (candidateId: string, evaluator: 'Branislav' | 'Dusan', data: EvaluationData) => {
-    setEvaluations(prev => ({
-      ...prev,
-      [candidateId]: {
-        ...prev[candidateId],
-        [evaluator]: data
-      }
-    }));
+  const saveEvaluation = async (candidateId: string, evaluator: 'Branislav' | 'Dusan', data: EvaluationData) => {
+    // Merge true allows us to just update Branislav's data without overwriting Dusan's
+    await setDoc(doc(db, 'evaluations', String(candidateId)), {
+      [evaluator]: data
+    }, { merge: true });
   };
 
   const getEvaluation = (candidateId: string, evaluator: 'Branislav' | 'Dusan') => {

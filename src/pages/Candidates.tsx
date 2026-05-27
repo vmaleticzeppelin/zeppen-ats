@@ -27,8 +27,7 @@ const Candidates: React.FC = () => {
   });
 
   const handleAddCandidate = (newCandidate: any) => {
-    const candidateWithId = { ...newCandidate, id: Date.now() };
-    addCandidate(candidateWithId);
+    addCandidate(newCandidate);
   };
 
   return (

@@ -11,7 +11,7 @@ const Process: React.FC = () => {
   const { getCandidateById, updateCandidate } = useCandidates();
   const [activeTab, setActiveTab] = useState('osnovni-podaci');
   
-  const candidate = id ? getCandidateById(Number(id)) : null;
+  const candidate = id ? getCandidateById(id) : null;
 
   if (!candidate) {
     return (
@@ -96,7 +96,7 @@ const Process: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'prvi-krug' && <FirstRoundWizard />}
+        {activeTab === 'prvi-krug' && <FirstRoundWizard candidateId={candidate.id} />}
         
         {activeTab === 'drugi-krug' && (
           <div className="evaluation-form empty-tab">

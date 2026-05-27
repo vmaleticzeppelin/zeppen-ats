@@ -1,9 +1,11 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase/config';
 import { candidatesList as initialCandidates } from '../data/mockData';
 
 export interface Candidate {
-  id: number;
+  id: string | number;
   name: string;
   email: string;
   phone: string;
@@ -17,41 +19,52 @@ export interface Candidate {
 
 interface CandidateContextType {
   candidates: Candidate[];
-  addCandidate: (c: Candidate) => void;
-  updateCandidate: (id: number, data: Partial<Candidate>) => void;
-  deleteCandidate: (id: number) => void;
-  getCandidateById: (id: number) => Candidate | undefined;
+  addCandidate: (c: Omit<Candidate, 'id'>) => Promise<void>;
+  updateCandidate: (id: string | number, data: Partial<Candidate>) => Promise<void>;
+  deleteCandidate: (id: string | number) => Promise<void>;
+  getCandidateById: (id: string | number) => Candidate | undefined;
 }
 
 const CandidateContext = createContext<CandidateContextType | undefined>(undefined);
 
 export const CandidateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [candidates, setCandidates] = useState<Candidate[]>(() => {
-    const saved = localStorage.getItem('zeppelin_candidates');
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return initialCandidates as Candidate[];
-  });
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    localStorage.setItem('zeppelin_candidates', JSON.stringify(candidates));
-  }, [candidates]);
+    const unsub = onSnapshot(collection(db, 'candidates'), (snapshot) => {
+      if (snapshot.empty && !hasInitialized.current) {
+        hasInitialized.current = true;
+        // Ako je baza potpuno prazna, napunimo je početnim test podacima
+        initialCandidates.forEach(async (c) => {
+          const { id, ...rest } = c;
+          await addDoc(collection(db, 'candidates'), rest);
+        });
+      } else {
+        const fetched = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Candidate[];
+        setCandidates(fetched);
+      }
+    });
+    return () => unsub();
+  }, []);
 
-  const addCandidate = (c: Candidate) => {
-    setCandidates(prev => [c, ...prev]);
+  const addCandidate = async (c: Omit<Candidate, 'id'>) => {
+    await addDoc(collection(db, 'candidates'), c);
   };
 
-  const updateCandidate = (id: number, data: Partial<Candidate>) => {
-    setCandidates(candidates.map(c => c.id === id ? { ...c, ...data } : c));
+  const updateCandidate = async (id: string | number, data: Partial<Candidate>) => {
+    await updateDoc(doc(db, 'candidates', String(id)), data);
   };
 
-  const deleteCandidate = (id: number) => {
-    setCandidates(candidates.filter(c => c.id !== id));
+  const deleteCandidate = async (id: string | number) => {
+    await deleteDoc(doc(db, 'candidates', String(id)));
   };
 
-  const getCandidateById = (id: number) => {
-    return candidates.find(c => c.id === id);
+  const getCandidateById = (id: string | number) => {
+    return candidates.find(c => String(c.id) === String(id));
   };
 
   return (
