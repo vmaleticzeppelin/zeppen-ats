@@ -1,9 +1,9 @@
 export const statsData = {
-  activeCandidates: 24,
-  inProcess: 12,
-  finalRound: 4,
-  hired: 2,
-  rejected: 8,
+  activeCandidates: 5,
+  inProcess: 2,
+  finalRound: 1,
+  hired: 0,
+  rejected: 1,
   trial: 1
 };
 
