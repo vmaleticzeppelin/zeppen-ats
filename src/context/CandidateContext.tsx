@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { candidatesList as initialCandidates } from '../data/mockData';
 
@@ -26,10 +26,20 @@ interface CandidateContextType {
 const CandidateContext = createContext<CandidateContextType | undefined>(undefined);
 
 export const CandidateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [candidates, setCandidates] = useState<Candidate[]>(initialCandidates as Candidate[]);
+  const [candidates, setCandidates] = useState<Candidate[]>(() => {
+    const saved = localStorage.getItem('zeppelin_candidates');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    return initialCandidates as Candidate[];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('zeppelin_candidates', JSON.stringify(candidates));
+  }, [candidates]);
 
   const addCandidate = (c: Candidate) => {
-    setCandidates([c, ...candidates]);
+    setCandidates(prev => [c, ...prev]);
   };
 
   const updateCandidate = (id: number, data: Partial<Candidate>) => {

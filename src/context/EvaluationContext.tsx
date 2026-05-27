@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 // Struktura ocena jednog korisnika
@@ -26,7 +26,15 @@ interface EvalContextType {
 const EvalContext = createContext<EvalContextType | undefined>(undefined);
 
 export const EvalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [evaluations, setEvaluations] = useState<CandidateEvaluations>({});
+  const [evaluations, setEvaluations] = useState<CandidateEvaluations>(() => {
+    const saved = localStorage.getItem('zeppelin_evaluations');
+    if (saved) return JSON.parse(saved);
+    return {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem('zeppelin_evaluations', JSON.stringify(evaluations));
+  }, [evaluations]);
 
   const saveEvaluation = (candidateId: string, evaluator: 'Branislav' | 'Dusan', data: EvaluationData) => {
     setEvaluations(prev => ({
