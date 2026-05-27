@@ -13,13 +13,16 @@ const getStatusBadgeClass = (status: string) => {
 
 const Candidates: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Svi');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [candidates, setCandidates] = useState(candidatesList);
 
-  const filteredCandidates = candidates.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    c.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCandidates = candidates.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          c.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'Svi' || c.status.includes(statusFilter);
+    return matchesSearch && matchesStatus;
+  });
 
   const handleAddCandidate = (newCandidate: any) => {
     setCandidates([newCandidate, ...candidates]);
@@ -50,9 +53,21 @@ const Candidates: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="btn-secondary">
-            <Filter size={18} /> Filteri
-          </button>
+          <div className="filter-box">
+            <Filter size={18} className="filter-icon" />
+            <select 
+              value={statusFilter} 
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="status-select"
+            >
+              <option value="Svi">Svi statusi</option>
+              <option value="Novi kandidat">Novi kandidat</option>
+              <option value="Prvi krug">Prvi krug</option>
+              <option value="Zaposlen">Zaposlen</option>
+              <option value="Odbijen">Odbijen</option>
+              <option value="Probni rad">Probni rad</option>
+            </select>
+          </div>
         </div>
 
         <div className="table-responsive">
