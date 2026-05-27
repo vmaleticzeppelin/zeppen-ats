@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { Search, Filter, Plus, MoreVertical, FileText, Phone, Trash2 } from 'lucide-react';
-import { candidatesList } from '../data/mockData';
+import { useNavigate } from 'react-router-dom';
+import { Search, Filter, Plus, FileText, Phone, Trash2, PlayCircle } from 'lucide-react';
 import AddCandidateModal from '../components/AddCandidateModal';
+import { useCandidates } from '../context/CandidateContext';
 import './Candidates.css';
 
 const getStatusBadgeClass = (status: string) => {
-  if (status === 'Novi kandidat') return 'badge-new';
+  if (status === 'Neocenjen') return 'badge-new';
   if (status === 'Zaposlen' || status === 'Probni rad') return 'badge-hired';
   if (status.includes('Odbijen')) return 'badge-rejected';
   return 'badge-active';
 };
 
 const Candidates: React.FC = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Svi');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [candidates, setCandidates] = useState(candidatesList);
+  const { candidates, addCandidate, deleteCandidate } = useCandidates();
 
   const filteredCandidates = candidates.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -25,7 +27,8 @@ const Candidates: React.FC = () => {
   });
 
   const handleAddCandidate = (newCandidate: any) => {
-    setCandidates([newCandidate, ...candidates]);
+    const candidateWithId = { ...newCandidate, id: Date.now() };
+    addCandidate(candidateWithId);
   };
 
   return (
@@ -119,6 +122,9 @@ const Candidates: React.FC = () => {
                   </td>
                   <td>
                     <div className="actions-cell">
+                      <button className="action-btn" title="Započni Selekciju" onClick={() => navigate(`/process/${c.id}`)}>
+                        <PlayCircle size={18} style={{color: 'var(--color-primary)'}} />
+                      </button>
                       <button className="action-btn" title="Pogledaj CV" onClick={() => {
                         const candidateAny = c as any;
                         if (candidateAny.cvUrl) {
@@ -131,7 +137,7 @@ const Candidates: React.FC = () => {
                       </button>
                       <button className="action-btn" title="Obriši" onClick={() => {
                         if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
-                          setCandidates(candidates.filter(cand => cand.id !== c.id));
+                          deleteCandidate(c.id);
                         }
                       }}>
                         <Trash2 size={18} style={{color: 'var(--danger)'}} />
