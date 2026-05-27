@@ -1,8 +1,7 @@
-import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { candidatesList as initialCandidates } from '../data/mockData';
 
 export interface Candidate {
   id: string | number;
@@ -29,24 +28,14 @@ const CandidateContext = createContext<CandidateContextType | undefined>(undefin
 
 export const CandidateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const hasInitialized = useRef(false);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'candidates'), (snapshot) => {
-      if (snapshot.empty && !hasInitialized.current) {
-        hasInitialized.current = true;
-        // Ako je baza potpuno prazna, napunimo je početnim test podacima
-        initialCandidates.forEach(async (c) => {
-          const { id, ...rest } = c;
-          await addDoc(collection(db, 'candidates'), rest);
-        });
-      } else {
-        const fetched = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Candidate[];
-        setCandidates(fetched);
-      }
+      const fetched = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Candidate[];
+      setCandidates(fetched);
     });
     return () => unsub();
   }, []);
