@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, var(--bg-panel) 0%, var(--bg-dark) 100%);
+  background: radial-gradient(circle at center, #fb923c 0%, #ea580c 100%);
   padding: 2rem;
 }
 
