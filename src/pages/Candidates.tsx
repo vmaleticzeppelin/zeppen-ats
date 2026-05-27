@@ -87,7 +87,7 @@ const Candidates: React.FC = () => {
             </thead>
             <tbody>
               {filteredCandidates.map((c) => (
-                <tr key={c.id}>
+                <tr key={c.id} onClick={() => navigate(`/process/${c.id}`)} style={{ cursor: 'pointer' }} className="clickable-row">
                   <td>
                     <div className="candidate-name-cell">
                       <div className="c-avatar">{c.name.charAt(0)}</div>
@@ -122,10 +122,11 @@ const Candidates: React.FC = () => {
                   </td>
                   <td>
                     <div className="actions-cell">
-                      <button className="action-btn" title="Započni Selekciju" onClick={() => navigate(`/process/${c.id}`)}>
+                      <button className="action-btn" title="Započni Selekciju" onClick={(e) => { e.stopPropagation(); navigate(`/process/${c.id}`); }}>
                         <PlayCircle size={18} style={{color: 'var(--color-primary)'}} />
                       </button>
-                      <button className="action-btn" title="Pogledaj CV" onClick={() => {
+                      <button className="action-btn" title="Pogledaj CV" onClick={(e) => {
+                        e.stopPropagation();
                         const candidateAny = c as any;
                         if (candidateAny.cvUrl) {
                           window.open(candidateAny.cvUrl, '_blank');
@@ -135,7 +136,8 @@ const Candidates: React.FC = () => {
                       }}>
                         <FileText size={18} />
                       </button>
-                      <button className="action-btn" title="Obriši" onClick={() => {
+                      <button className="action-btn" title="Obriši" onClick={(e) => {
+                        e.stopPropagation();
                         if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
                           deleteCandidate(c.id);
                         }
