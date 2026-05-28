@@ -11,7 +11,7 @@ interface AddCandidateModalProps {
 const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, onSave }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: ''
+    name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: ''
   });
 
   if (!isOpen) return null;
@@ -25,9 +25,10 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
       score: null,
       appliedDate: new Date().toLocaleDateString('sr-RS'),
       source: formData.source,
-      cvUrl: formData.cvUrl
+      cvUrl: formData.cvUrl,
+      interviewDate: formData.interviewDate
     });
-    setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '' });
+    setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '' });
     setStep(1);
     onClose();
   };
@@ -64,8 +65,8 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
                 <input type="date" />
               </div>
               <div className="input-group">
-                <label>LinkedIn Profil</label>
-                <input type="url" placeholder="https://linkedin.com/in/..." />
+                <label>Zakazan razgovor (Datum i vreme)</label>
+                <input type="datetime-local" value={formData.interviewDate} onChange={e => setFormData({...formData, interviewDate: e.target.value})} />
               </div>
               
               <div className="input-group full-width">

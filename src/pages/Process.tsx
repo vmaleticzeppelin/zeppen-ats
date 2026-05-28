@@ -82,6 +82,9 @@ const Process: React.FC = () => {
               <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
                 <p><strong>Izvor prijave:</strong> {candidate.source}</p>
                 <p><strong>Datum prijave:</strong> {candidate.appliedDate}</p>
+                {candidate.interviewDate && (
+                  <p><strong>Zakazan razgovor:</strong> {new Date(candidate.interviewDate).toLocaleString('sr-RS', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                )}
                 {candidate.cvUrl && (
                   <p style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
                     <strong>CV Dokument:</strong> 

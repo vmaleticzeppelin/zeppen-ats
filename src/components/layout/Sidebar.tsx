@@ -8,7 +8,8 @@ import {
   Settings, 
   HelpCircle,
   LogOut,
-  User
+  User,
+  CalendarDays
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
@@ -47,6 +48,11 @@ const Sidebar: React.FC = () => {
           <NavLink to="/dashboard" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <LayoutDashboard className="nav-icon" size={20} />
             <span>Dashboard</span>
+          </NavLink>
+          
+          <NavLink to="/calendar" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <CalendarDays className="nav-icon" size={20} />
+            <span>Kalendar</span>
           </NavLink>
           
           {currentUser !== 'Zorica' && (

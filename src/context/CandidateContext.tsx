@@ -14,6 +14,7 @@ export interface Candidate {
   source: string;
   cvUrl?: string;
   notes?: string;
+  interviewDate?: string;
 }
 
 interface CandidateContextType {

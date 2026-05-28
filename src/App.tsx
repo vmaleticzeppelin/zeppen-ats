@@ -4,6 +4,7 @@ import Layout from './components/layout/Layout';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Candidates from './pages/Candidates';
+import Calendar from './pages/Calendar';
 import Process from './pages/Process';
 import Login from './pages/Login';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -38,6 +39,7 @@ const App: React.FC = () => {
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="onboarding" element={<Onboarding />} />
                 <Route path="dashboard" element={<Dashboard />} />
+                <Route path="calendar" element={<Calendar />} />
                 <Route path="candidates" element={<Candidates />} />
                 <Route path="process/:id" element={<Process />} />
                 {/* Fallback */}
