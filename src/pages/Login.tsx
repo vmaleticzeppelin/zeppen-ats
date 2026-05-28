@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import type { UserRole } from '../context/AuthContext';
-import { Shield, User } from 'lucide-react';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/config';
 import './Login.css';
 
 const Login: React.FC = () => {
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const [isRegister, setIsRegister] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = (role: UserRole) => {
-    login(role);
-    navigate('/dashboard');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      if (isRegister) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+      navigate('/dashboard');
+    } catch (err: any) {
+      if (err.code === 'auth/invalid-credential') {
+        setError('Pogrešan email ili šifra.');
+      } else if (err.code === 'auth/email-already-in-use') {
+        setError('Ovaj email se već koristi.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('Šifra mora imati barem 6 karaktera.');
+      } else {
+        setError('Došlo je do greške: ' + err.message);
+      }
+    }
   };
 
   return (
@@ -20,32 +40,44 @@ const Login: React.FC = () => {
         <div className="login-header">
           <div className="logo-placeholder">ZP</div>
           <h1>Zeppelin Pro ATS</h1>
-          <p>Izaberite nalog za pristup sistemu</p>
+          <p>{isRegister ? 'Registracija novog naloga' : 'Prijavite se za pristup sistemu'}</p>
         </div>
 
-        <div className="login-roles">
-          <button className="role-btn admin" onClick={() => handleLogin('Admin')}>
-            <Shield size={24} />
-            <div className="role-info">
-              <strong>Administrator</strong>
-              <span>Pregled svih ocena i proseka</span>
-            </div>
-          </button>
+        <form onSubmit={handleSubmit} className="login-form">
+          {error && <div className="login-error">{error}</div>}
+          
+          <div className="form-group">
+            <label>Email adresa</label>
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="npr. admin@zeppelin.rs"
+              required 
+            />
+            {isRegister && <small style={{color: '#A0A5B1', marginTop: '4px', display: 'block'}}>Koristite admin@..., branislav@... ili dusan@...</small>}
+          </div>
 
-          <button className="role-btn evaluator" onClick={() => handleLogin('Branislav')}>
-            <User size={24} />
-            <div className="role-info">
-              <strong>Branislav</strong>
-              <span>Unos ocena i beleški</span>
-            </div>
-          </button>
+          <div className="form-group">
+            <label>Šifra</label>
+            <input 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Unesite šifru (min. 6 karaktera)"
+              required 
+              minLength={6}
+            />
+          </div>
 
-          <button className="role-btn evaluator" onClick={() => handleLogin('Dusan')}>
-            <User size={24} />
-            <div className="role-info">
-              <strong>Dušan</strong>
-              <span>Unos ocena i beleški</span>
-            </div>
+          <button type="submit" className="btn-primary login-submit-btn">
+            {isRegister ? 'Registruj se' : 'Prijavi se'}
+          </button>
+        </form>
+
+        <div className="login-toggle" style={{marginTop: '20px', textAlign: 'center'}}>
+          <button type="button" className="btn-text" onClick={() => setIsRegister(!isRegister)}>
+            {isRegister ? 'Već imate nalog? Prijavite se' : 'Nemate nalog? Napravite ga ovde'}
           </button>
         </div>
       </div>
