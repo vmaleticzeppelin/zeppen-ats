@@ -87,7 +87,7 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ branislavData, dusanDat
                     <strong>Crvene zastavice:</strong> {Object.values(branislavData.redFlags).join(', ') || 'Nema zastavica'}
                   </div>
                   <div className="admin-note-box">
-                    <strong>Preporuka:</strong> <span className="badge badge-primary">{branislavData.recommendation || 'Nije definisano'}</span>
+                    <strong>Ukupan utisak:</strong> <span className="badge badge-primary">{branislavData.recommendation ? (!isNaN(Number(branislavData.recommendation)) ? `${branislavData.recommendation} / 10` : branislavData.recommendation) : 'Nije definisano'}</span>
                   </div>
                 </>
               ) : <p>Nije još ocenio.</p>}
@@ -113,7 +113,7 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ branislavData, dusanDat
                     <strong>Crvene zastavice:</strong> {Object.values(dusanData.redFlags).join(', ') || 'Nema zastavica'}
                   </div>
                   <div className="admin-note-box">
-                    <strong>Preporuka:</strong> <span className="badge badge-primary">{dusanData.recommendation || 'Nije definisano'}</span>
+                    <strong>Ukupan utisak:</strong> <span className="badge badge-primary">{dusanData.recommendation ? (!isNaN(Number(dusanData.recommendation)) ? `${dusanData.recommendation} / 10` : dusanData.recommendation) : 'Nije definisano'}</span>
                   </div>
                 </>
               ) : <p>Nije još ocenio.</p>}

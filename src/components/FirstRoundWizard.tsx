@@ -514,7 +514,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
                 <textarea rows={2} placeholder="Kratko objašnjenje..." className="text-input" value={notes.razlogPromene || ''} onChange={e => handleNote('razlogPromene', e.target.value)}></textarea>
               </div>
               <div className="form-group">
-                <label>Očekivana plata</label>
+                <label>Očekivana primanja na mesečnom nivou</label>
                 <input type="text" placeholder="Npr. 120.000 RSD" className="text-input" value={notes.ocekivanaPlata || ''} onChange={e => handleNote('ocekivanaPlata', e.target.value)} />
               </div>
               <div className="form-group">
@@ -552,12 +552,19 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
                   <textarea className="text-input" rows={2} value={notes.final_kultura || ''} onChange={e => handleNote('final_kultura', e.target.value)} />
                 </div>
                 
-                <div className="recommendation-box">
-                  <label>Finalna preporuka</label>
-                  <div className="btn-group">
-                    <button className={`btn-toggle ${recommendation === 'DA' ? 'active-success' : ''}`} onClick={() => setRecommendation('DA')}>DA</button>
-                    <button className={`btn-toggle ${recommendation === 'MOZDA' ? 'active-warning' : ''}`} onClick={() => setRecommendation('MOZDA')}>MOŽDA</button>
-                    <button className={`btn-toggle ${recommendation === 'NE' ? 'active-danger' : ''}`} onClick={() => setRecommendation('NE')}>NE</button>
+                <div className="recommendation-box" style={{ marginTop: '1.5rem' }}>
+                  <label style={{ fontSize: '1.1rem', marginBottom: '0.5rem', display: 'block' }}>Ukupan utisak (1 do 10)</label>
+                  <div className="rating-stars" style={{ display: 'flex', gap: '0.25rem' }}>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+                      <button 
+                        key={num} 
+                        className={`star-btn ${Number(recommendation) >= num ? 'active' : ''}`}
+                        onClick={() => setRecommendation(String(num))}
+                        style={{ padding: '0.25rem', cursor: 'pointer', border: 'none', background: 'none' }}
+                      >
+                        <Star size={32} fill={Number(recommendation) >= num ? "var(--warning)" : "none"} stroke={Number(recommendation) >= num ? "var(--warning)" : "var(--color-text-muted)"} />
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
