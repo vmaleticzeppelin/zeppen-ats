@@ -268,6 +268,23 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
               <p><em>"Naši klijenti često imaju kratke rokove, specifične zahteve i očekuju brzu i profesionalnu reakciju, tako da nam je veoma važna organizovanost, odgovornost i način komunikacije."</em></p>
               <p><em>"Ovo nije klasičan kancelarijski posao gde se svaki dan ponavlja isto, već pozicija za osobu koja voli dinamično okruženje, zna da razmišlja unapred, preuzima odgovornost i održava dobar odnos sa klijentima i kolegama."</em></p>
             </div>
+            
+            <div className="instruction-box mt-3">
+              <strong>Značaj ovakvog uvoda:</strong>
+              <ul style={{ paddingLeft: '1.5rem', marginBottom: '1rem', marginTop: '0.5rem' }}>
+                <li>filtrira ljude koji traže „lagan administrativni posao”,</li>
+                <li>privlači energičnije i organizovanije kandidate,</li>
+                <li>i odmah postavlja ozbiljan ton razgovora.</li>
+              </ul>
+              <strong>Savet za intervjuera:</strong>
+              <p style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>Prvih 60–90 sekundi treba da zvučite smireno, profesionalno i samouvereno — ne previše prijateljski i ne previše „korporativno hladno”. Kandidat tada podsvesno procenjuje:</p>
+              <ul style={{ paddingLeft: '1.5rem', marginTop: '0', marginBottom: '0' }}>
+                <li>stabilnost firme,</li>
+                <li>kulturu,</li>
+                <li>nivo organizacije,</li>
+                <li>i autoritet ljudi preko puta njega.</li>
+              </ul>
+            </div>
           </div>
         )}
 
