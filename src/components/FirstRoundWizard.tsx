@@ -467,7 +467,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
             <h2>KORAK 9 — Scenario Pitanje (Najvažnije)</h2>
             <div className="script-box bg-dark border-warning">
               <span className="badge badge-warning">SCENARIO - PROČITAJTE KANDIDATU:</span>
-              <p><em>"Klijent kasni sa potvrdom. Dobavljač čeka odgovor. Rok je sutra. Vozač treba da krene za sat vremena. Šta radite?"</em></p>
+              <p><em>"Klijent te zove izuzetno nervozan jer su promotivni artikli stigli sa pogrešnom nijansom boje logotipa u odnosu na ono što je odobrio u vizuelnoj pripremi. Rok za njihovu podelu je za dva dana. On viče i zahteva momentalni povraćaj novca i prekid saradnje. Kako vodiš taj razgovor?"</em></p>
             </div>
             
             <div className="instruction-box">
