@@ -42,7 +42,12 @@ export const CandidateProvider: React.FC<{ children: ReactNode }> = ({ children 
   }, []);
 
   const addCandidate = async (c: Omit<Candidate, 'id'>) => {
-    await addDoc(collection(db, 'candidates'), c);
+    try {
+      await addDoc(collection(db, 'candidates'), c);
+    } catch (error: any) {
+      console.error("Greška pri dodavanju:", error);
+      alert("Greška pri snimanju u bazu: " + error.message);
+    }
   };
 
   const updateCandidate = async (id: string | number, data: Partial<Candidate>) => {
