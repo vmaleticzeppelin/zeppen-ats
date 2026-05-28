@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { X, Upload } from 'lucide-react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../firebase/config';
+import { X, Link as LinkIcon } from 'lucide-react';
 import './AddCandidateModal.css';
 
 interface AddCandidateModalProps {
@@ -12,47 +10,27 @@ interface AddCandidateModalProps {
 
 const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, onSave }) => {
   const [step, setStep] = useState(1);
-  const [isUploading, setIsUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: ''
   });
 
   if (!isOpen) return null;
 
-  const handleSave = async () => {
-    setIsUploading(true);
-    let finalCvUrl = formData.cvUrl;
-
-    try {
-      if (selectedFile) {
-        const fileRef = ref(storage, `cvs/${Date.now()}_${selectedFile.name}`);
-        const snapshot = await uploadBytes(fileRef, selectedFile);
-        finalCvUrl = await getDownloadURL(snapshot.ref);
-      }
-
-      onSave({
-        name: formData.name || 'Novi Kandidat',
-        email: formData.email || '-',
-        phone: formData.phone || '-',
-        status: 'Neocenjen',
-        score: null,
-        appliedDate: new Date().toLocaleDateString('sr-RS'),
-        source: formData.source,
-        cvUrl: finalCvUrl,
-        interviewDate: formData.interviewDate
-      });
-      
-      setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '' });
-      setSelectedFile(null);
-      setStep(1);
-      onClose();
-    } catch (error) {
-      console.error("Greška pri uploadu CV-ja:", error);
-      alert("Došlo je do greške prilikom uploada CV-ja. Proverite dozvole (Rules) za Firebase Storage.");
-    } finally {
-      setIsUploading(false);
-    }
+  const handleSave = () => {
+    onSave({
+      name: formData.name || 'Novi Kandidat',
+      email: formData.email || '-',
+      phone: formData.phone || '-',
+      status: 'Neocenjen',
+      score: null,
+      appliedDate: new Date().toLocaleDateString('sr-RS'),
+      source: formData.source,
+      cvUrl: formData.cvUrl,
+      interviewDate: formData.interviewDate
+    });
+    setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '' });
+    setStep(1);
+    onClose();
   };
 
   return (
@@ -92,15 +70,16 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
               </div>
               
               <div className="input-group full-width">
-                <label>CV Upload</label>
-                <div className="file-upload-box">
-                  <Upload size={24} className="upload-icon" />
-                  <p>{selectedFile ? `CV izabran: ${selectedFile.name}` : "Kliknite ovde ili prevucite fajl (PDF, DOCX)"}</p>
-                  <input type="file" className="file-input-hidden" accept=".pdf,.doc,.docx" onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setSelectedFile(e.target.files[0]);
-                    }
-                  }} />
+                <label>Link do CV-ja (Google Drive, Dropbox, LinkedIn...)</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid #383D47', padding: '0.8rem', borderRadius: '8px' }}>
+                  <LinkIcon size={20} color="#A0A5B1" />
+                  <input 
+                    type="url" 
+                    placeholder="https://..." 
+                    style={{ background: 'transparent', border: 'none', color: '#fff', width: '100%', outline: 'none' }}
+                    value={formData.cvUrl} 
+                    onChange={e => setFormData({...formData, cvUrl: e.target.value})} 
+                  />
                 </div>
               </div>
             </div>
@@ -108,10 +87,8 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
         </div>
 
         <div className="modal-footer">
-          <button className="btn-secondary" onClick={onClose} disabled={isUploading}>Odustani</button>
-          <button className="btn-primary" onClick={handleSave} disabled={isUploading}>
-            {isUploading ? 'Snimanje...' : 'Sačuvaj Kandidata'}
-          </button>
+          <button className="btn-secondary" onClick={onClose}>Odustani</button>
+          <button className="btn-primary" onClick={handleSave}>Sačuvaj Kandidata</button>
         </div>
       </div>
     </div>
