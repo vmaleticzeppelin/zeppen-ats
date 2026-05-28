@@ -4,6 +4,7 @@ import { Search, Filter, Plus, FileText, Phone, Trash2, PlayCircle } from 'lucid
 import AddCandidateModal from '../components/AddCandidateModal';
 import { useAuth } from '../context/AuthContext';
 import { useCandidates } from '../context/CandidateContext';
+import { useEvaluations } from '../context/EvaluationContext';
 import './Candidates.css';
 
 const getStatusBadgeClass = (status: string) => {
@@ -20,6 +21,7 @@ const Candidates: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('Svi');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { candidates, addCandidate, deleteCandidate } = useCandidates();
+  const { evaluations } = useEvaluations();
 
   const filteredCandidates = candidates.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -105,6 +107,24 @@ const Candidates: React.FC = () => {
                     <span className={`badge ${getStatusBadgeClass(c.status)}`}>
                       {c.status}
                     </span>
+                    {evaluations[String(c.id)] && Object.keys(evaluations[String(c.id)]).length > 0 && (
+                      <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
+                        Ocenili:
+                        <div style={{ display: 'flex', gap: '4px', marginTop: '4px', flexWrap: 'wrap' }}>
+                          {Object.keys(evaluations[String(c.id)]).map(evaluator => (
+                            <span key={evaluator} style={{ 
+                              background: 'rgba(99, 102, 241, 0.1)', 
+                              color: 'var(--color-primary)', 
+                              padding: '2px 6px', 
+                              borderRadius: '4px', 
+                              fontWeight: 500 
+                            }}>
+                              {evaluator}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </td>
                   <td>
                     {c.score ? (
