@@ -63,10 +63,54 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
   const handleNote = (key: string, val: string) => setNotes({ ...notes, [key]: val });
   const handleRedFlag = (key: string, val: string) => setRedFlags({ ...redFlags, [key]: val });
 
-  const nextStep = () => setStep(prev => Math.min(prev + 1, 10));
+  const validateStep = (currentStep: number): boolean => {
+    // Ako je Admin, dozvoljavamo prolaz i bez svih polja
+    if (currentUser === 'Admin') return true;
+
+    const reqScores = (keys: string[]) => keys.every(k => scores[k]);
+    const reqNotes = (keys: string[]) => keys.every(k => notes[k] && notes[k].trim() !== '');
+
+    switch (currentStep) {
+      case 1:
+        if (arrivedOnTime === null) return false;
+        return reqScores(['s1_energija', 's1_kontakt', 's1_sigurnost', 's1_prof', 's1_komunikativnost', 's1_vizuelni']);
+      case 3:
+        if (!reqNotes(['iskustvo', 'ocekivanaPlata', 'dostupnost'])) return false; // Neka polja mogu biti opciona ako nema iskustva, ali trazimo bar ova
+        return reqScores(['s3_jasnoca', 's3_struktura', 's3_energija', 's3_sigurnost', 's3_fokus', 's3_prof']);
+      case 4:
+        return reqScores(['s4_motivacija', 's4_priprema', 's4_ozbiljnost', 's4_energija', 's4_interes']);
+      case 5:
+        return reqScores(['s5_sigurnost', 's5_telefon', 's5_prodajni', 's5_energija', 's5_prirodnost']);
+      case 6:
+        return reqScores(['s6_organizacija', 's6_logika', 's6_prioriteti', 's6_stabilnost', 's6_ownership']);
+      case 7:
+        return reqScores(['s7_stabilnost', 's7_prof', 's7_ownership', 's7_smirenost', 's7_otpornost']);
+      case 8:
+        return reqScores(['s8_organizovanost', 's8_disciplina', 's8_crm', 's8_sistematicnost', 's8_preciznost']);
+      case 9:
+        return reqScores(['s9_organizacija', 's9_ownership', 's9_logika', 's9_stabilnost', 's9_resavanje', 's9_komunikacija']);
+      case 10:
+        if (!recommendation) return false;
+        return reqNotes(['final_prednosti', 'final_rizici', 'final_potencijal', 'final_kultura']);
+      default:
+        return true; // Koraci 0 i 2 nemaju obavezna polja
+    }
+  };
+
+  const nextStep = () => {
+    if (!validateStep(step)) {
+      alert("Molimo vas da popunite sva obavezna polja i ocenite sve stavke pre prelaska na sledeći korak.");
+      return;
+    }
+    setStep(prev => Math.min(prev + 1, 10));
+  };
   const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
 
   const handleSaveAll = async () => {
+    if (!validateStep(10)) {
+      alert("Molimo vas da popunite sva tekstualna polja i finalnu preporuku pre čuvanja.");
+      return;
+    }
     if (currentUser === 'Branislav' || currentUser === 'Dusan' || currentUser === 'Admin') {
       await saveEvaluation(String(candidateId), currentUser, { scores, notes, redFlags, recommendation });
       const currentTotalScore = Math.round(radarData.reduce((acc, curr) => acc + curr.A, 0) / radarData.length) || 0;
