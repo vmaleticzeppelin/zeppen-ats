@@ -42,11 +42,6 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
         </div>
 
         <div className="modal-body">
-          <div className="modal-tabs">
-            <button className={`m-tab ${step === 1 ? 'active' : ''}`} onClick={() => setStep(1)}>1. Osnovni podaci</button>
-            <button className={`m-tab ${step === 2 ? 'active' : ''}`} onClick={() => setStep(2)}>2. Dodatne informacije</button>
-          </div>
-
           {step === 1 && (
             <div className="modal-form-grid">
               <div className="input-group">
@@ -90,60 +85,11 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
               </div>
             </div>
           )}
-
-          {step === 2 && (
-            <div className="modal-form-grid">
-              <div className="input-group">
-                <label>Prethodno iskustvo (Godine)</label>
-                <select>
-                  <option>Bez iskustva</option>
-                  <option>Manje od 1 godine</option>
-                  <option>1 - 3 godine</option>
-                  <option>3 - 5 godina</option>
-                  <option>Više od 5 godina</option>
-                </select>
-              </div>
-              <div className="input-group">
-                <label>Poslednja firma</label>
-                <input type="text" placeholder="Ime firme" />
-              </div>
-              <div className="input-group full-width">
-                <label>Razlog promene posla</label>
-                <textarea rows={2} placeholder="Kratko objašnjenje..."></textarea>
-              </div>
-              <div className="input-group">
-                <label>Očekivana plata</label>
-                <input type="text" placeholder="Npr. 120.000 RSD" />
-              </div>
-              <div className="input-group">
-                <label>Dostupnost za početak rada</label>
-                <select>
-                  <option>Odmah</option>
-                  <option>Za 2 nedelje</option>
-                  <option>Za mesec dana</option>
-                </select>
-              </div>
-              <div className="input-group">
-                <label>Izvor prijave</label>
-                <select value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})}>
-                  <option value="Infostud">Infostud</option>
-                  <option value="LinkedIn">LinkedIn</option>
-                  <option value="Sajt kompanije">Sajt kompanije</option>
-                  <option value="Preporuka">Preporuka</option>
-                  <option value="Ostalo">Ostalo</option>
-                </select>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="modal-footer">
           <button className="btn-secondary" onClick={onClose}>Odustani</button>
-          {step === 1 ? (
-             <button className="btn-primary" onClick={() => setStep(2)}>Sledeći korak</button>
-          ) : (
-             <button className="btn-primary" onClick={handleSave}>Sačuvaj Kandidata</button>
-          )}
+          <button className="btn-primary" onClick={handleSave}>Sačuvaj Kandidata</button>
         </div>
       </div>
     </div>

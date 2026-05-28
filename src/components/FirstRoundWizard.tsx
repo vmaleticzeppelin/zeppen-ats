@@ -192,13 +192,59 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
         {/* STEP 3: O KANDIDATU */}
         {step === 3 && (
           <div className="step-panel">
-            <h2>KORAK 3 — Pitanje o kandidatu</h2>
+            <h2>KORAK 3 — Pitanje o kandidatu i osnovne informacije</h2>
             <div className="question-highlight">
               <strong>PITANJE:</strong> "Recite nam nešto o sebi i svom dosadašnjem iskustvu."
             </div>
             
             <div className="instruction-box">
-              <strong>Instrukcija intervjueru:</strong> Ne procenjujte samo sadržaj odgovora. Posmatrajte: strukturu govora, sigurnost, logiku, fokus, energiju, jasnoću komunikacije, sposobnost prezentacije.
+              <strong>Instrukcija intervjueru:</strong> Popunite osnovne informacije tokom razgovora o iskustvu. Ne procenjujte samo sadržaj odgovora. Posmatrajte i strukturu govora, sigurnost, logiku.
+            </div>
+
+            <div className="modal-form-grid" style={{ marginBottom: '2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group">
+                <label>Prethodno iskustvo (Godine)</label>
+                <select value={notes.iskustvo || ''} onChange={e => handleNote('iskustvo', e.target.value)} className="text-input">
+                  <option value="">Izaberite...</option>
+                  <option value="Bez iskustva">Bez iskustva</option>
+                  <option value="Manje od 1 godine">Manje od 1 godine</option>
+                  <option value="1 - 3 godine">1 - 3 godine</option>
+                  <option value="3 - 5 godina">3 - 5 godina</option>
+                  <option value="Više od 5 godina">Više od 5 godina</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Poslednja firma</label>
+                <input type="text" placeholder="Ime firme" className="text-input" value={notes.poslednjaFirma || ''} onChange={e => handleNote('poslednjaFirma', e.target.value)} />
+              </div>
+              <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                <label>Razlog promene posla</label>
+                <textarea rows={2} placeholder="Kratko objašnjenje..." className="text-input" value={notes.razlogPromene || ''} onChange={e => handleNote('razlogPromene', e.target.value)}></textarea>
+              </div>
+              <div className="form-group">
+                <label>Očekivana plata</label>
+                <input type="text" placeholder="Npr. 120.000 RSD" className="text-input" value={notes.ocekivanaPlata || ''} onChange={e => handleNote('ocekivanaPlata', e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>Dostupnost za početak rada</label>
+                <select value={notes.dostupnost || ''} onChange={e => handleNote('dostupnost', e.target.value)} className="text-input">
+                  <option value="">Izaberite...</option>
+                  <option value="Odmah">Odmah</option>
+                  <option value="Za 2 nedelje">Za 2 nedelje</option>
+                  <option value="Za mesec dana">Za mesec dana</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Izvor prijave</label>
+                <select value={notes.izvorPrijave || ''} onChange={e => handleNote('izvorPrijave', e.target.value)} className="text-input">
+                  <option value="">Izaberite...</option>
+                  <option value="Infostud">Infostud</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="Sajt kompanije">Sajt kompanije</option>
+                  <option value="Preporuka">Preporuka</option>
+                  <option value="Ostalo">Ostalo</option>
+                </select>
+              </div>
             </div>
 
             <div className="ratings-grid">
