@@ -191,6 +191,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
               <p>Ne procenjujte kandidata samo po tome koliko je komunikativan ili simpatičan.</p>
               <p><strong>U Zeppelin Pro najvažnije su:</strong></p>
               <div className="tags-grid">
+                <span>Poštenje</span><span>Iskrenost</span><span>Lojalnost</span><span>Upornost</span>
                 <span>Energija</span><span>Organizacija</span><span>Brzina razmišljanja</span>
                 <span>Stabilnost pod pritiskom</span>
                 <span 
