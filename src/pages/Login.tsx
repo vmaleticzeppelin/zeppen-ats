@@ -9,7 +9,7 @@ const ALLOWED_EMAILS = [
   'branislav.milosevic@zeppelin.rs',
   'dusan.resanovic@zeppelin.rs',
   'dusan.resanovic@zepppelin.rs',
-  'zorica@zeppelin.rs'
+  'office@zeppelin.rs'
 ];
 
 const Login: React.FC = () => {

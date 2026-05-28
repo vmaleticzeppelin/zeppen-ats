@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setCurrentUser('Branislav');
         } else if (email === 'dusan.resanovic@zeppelin.rs' || email === 'dusan.resanovic@zepppelin.rs') {
           setCurrentUser('Dusan');
-        } else if (email === 'zorica@zeppelin.rs') {
+        } else if (email === 'office@zeppelin.rs') {
           setCurrentUser('Zorica');
         } else {
           setCurrentUser(null); // Unknown users get blocked
