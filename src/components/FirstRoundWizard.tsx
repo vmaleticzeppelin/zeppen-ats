@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   ChevronRight, ChevronLeft, Shield, CheckCircle, AlertTriangle, Star, 
   MessageSquare, Clock, Target, Briefcase, Info, XCircle
@@ -6,6 +7,7 @@ import {
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../context/AuthContext';
 import { useEvaluations } from '../context/EvaluationContext';
+import { useCandidates } from '../context/CandidateContext';
 import AdminFirstRoundView from './AdminFirstRoundView';
 import './FirstRoundWizard.css';
 import './AdminFirstRoundView.css';
@@ -29,8 +31,10 @@ interface FirstRoundWizardProps {
 }
 
 const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
+  const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { saveEvaluation, getEvaluation } = useEvaluations();
+  const { updateCandidate } = useCandidates();
 
   const [step, setStep] = useState(0);
   const [scores, setScores] = useState<Record<string, number>>({});
@@ -48,6 +52,8 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
         setNotes(existing.notes || {});
         setRedFlags(existing.redFlags || {});
         setRecommendation(existing.recommendation || null);
+        if (existing.notes?.arrivedOnTime === 'DA') setArrivedOnTime(true);
+        else if (existing.notes?.arrivedOnTime === 'NE') setArrivedOnTime(false);
       }
     }
   }, [currentUser, candidateId]);
@@ -59,10 +65,13 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
   const nextStep = () => setStep(prev => Math.min(prev + 1, 10));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
 
-  const handleSaveAll = () => {
+  const handleSaveAll = async () => {
     if (currentUser === 'Branislav' || currentUser === 'Dusan' || currentUser === 'Admin') {
-      saveEvaluation(String(candidateId), currentUser, { scores, notes, redFlags, recommendation });
-      alert('Uspešno sačuvano za: ' + currentUser);
+      await saveEvaluation(String(candidateId), currentUser, { scores, notes, redFlags, recommendation });
+      const currentTotalScore = Math.round(radarData.reduce((acc, curr) => acc + curr.A, 0) / radarData.length) || 0;
+      await updateCandidate(candidateId, { score: currentTotalScore, status: 'Prvi krug završen' });
+      alert('Procena uspešno sačuvana!');
+      navigate('/candidates');
     }
   };
 
@@ -142,8 +151,8 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
             <div className="form-group boolean-group">
               <label>Kandidat došao na vreme?</label>
               <div className="btn-group">
-                <button className={`btn-toggle ${arrivedOnTime === true ? 'active-success' : ''}`} onClick={() => setArrivedOnTime(true)}>DA</button>
-                <button className={`btn-toggle ${arrivedOnTime === false ? 'active-danger' : ''}`} onClick={() => setArrivedOnTime(false)}>NE</button>
+                <button className={`btn-toggle ${arrivedOnTime === true ? 'active-success' : ''}`} onClick={() => { setArrivedOnTime(true); handleNote('arrivedOnTime', 'DA'); }}>DA</button>
+                <button className={`btn-toggle ${arrivedOnTime === false ? 'active-danger' : ''}`} onClick={() => { setArrivedOnTime(false); handleNote('arrivedOnTime', 'NE'); }}>NE</button>
               </div>
             </div>
 
@@ -436,23 +445,23 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
               <div className="final-inputs">
                 <div className="form-group">
                   <label>Najveće prednosti kandidata</label>
-                  <textarea className="text-input" rows={2} />
+                  <textarea className="text-input" rows={2} value={notes.final_prednosti || ''} onChange={e => handleNote('final_prednosti', e.target.value)} />
                 </div>
                 <div className="form-group">
                   <label>Najveći rizici</label>
-                  <textarea className="text-input" rows={2} />
+                  <textarea className="text-input" rows={2} value={notes.final_rizici || ''} onChange={e => handleNote('final_rizici', e.target.value)} />
                 </div>
                 <div className="form-group">
                   <label className="text-danger">Crvene zastavice</label>
-                  <textarea className="text-input danger-input" rows={2} />
+                  <textarea className="text-input danger-input" rows={2} value={redFlags.final_zastavice || ''} onChange={e => handleRedFlag('final_zastavice', e.target.value)} />
                 </div>
                 <div className="form-group">
                   <label>Potencijal za razvoj</label>
-                  <textarea className="text-input" rows={2} />
+                  <textarea className="text-input" rows={2} value={notes.final_potencijal || ''} onChange={e => handleNote('final_potencijal', e.target.value)} />
                 </div>
                 <div className="form-group">
                   <label>Kompatibilnost sa Zeppelin Pro kulturom</label>
-                  <textarea className="text-input" rows={2} />
+                  <textarea className="text-input" rows={2} value={notes.final_kultura || ''} onChange={e => handleNote('final_kultura', e.target.value)} />
                 </div>
                 
                 <div className="recommendation-box">
