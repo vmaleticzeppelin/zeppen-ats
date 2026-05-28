@@ -15,6 +15,8 @@ export interface Candidate {
   cvUrl?: string;
   notes?: string;
   interviewDate?: string;
+  address?: string;
+  birthDate?: string;
 }
 
 interface CandidateContextType {

@@ -6,29 +6,54 @@ interface AddCandidateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (candidate: any) => void;
+  initialData?: any;
 }
 
-const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, onSave }) => {
+const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, onSave, initialData }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: ''
+    name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', address: '', birthDate: ''
   });
+
+  React.useEffect(() => {
+    if (isOpen) {
+      if (initialData) {
+        setFormData({
+          name: initialData.name || '',
+          email: initialData.email || '',
+          phone: initialData.phone || '',
+          source: initialData.source || 'LinkedIn',
+          cvUrl: initialData.cvUrl || '',
+          interviewDate: initialData.interviewDate || '',
+          address: initialData.address || '',
+          birthDate: initialData.birthDate || ''
+        });
+      } else {
+        setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', address: '', birthDate: '' });
+      }
+      setStep(1);
+    }
+  }, [isOpen, initialData]);
 
   if (!isOpen) return null;
 
   const handleSave = () => {
     onSave({
+      ...(initialData ? { id: initialData.id, status: initialData.status, score: initialData.score, appliedDate: initialData.appliedDate } : {
+        status: 'Neocenjen',
+        score: null,
+        appliedDate: new Date().toLocaleDateString('sr-RS'),
+      }),
       name: formData.name || 'Novi Kandidat',
       email: formData.email || '-',
       phone: formData.phone || '-',
-      status: 'Neocenjen',
-      score: null,
-      appliedDate: new Date().toLocaleDateString('sr-RS'),
       source: formData.source,
       cvUrl: formData.cvUrl,
-      interviewDate: formData.interviewDate
+      interviewDate: formData.interviewDate,
+      address: formData.address,
+      birthDate: formData.birthDate
     });
-    setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '' });
+    setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', address: '', birthDate: '' });
     setStep(1);
     onClose();
   };
@@ -37,7 +62,7 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
     <div className="modal-overlay">
       <div className="modal-content card">
         <div className="modal-header">
-          <h2>Dodaj Novog Kandidata</h2>
+          <h2>{initialData ? 'Izmeni Kandidata' : 'Dodaj Novog Kandidata'}</h2>
           <button className="btn-close" onClick={onClose}><X size={24} /></button>
         </div>
 
@@ -58,11 +83,11 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
               </div>
               <div className="input-group">
                 <label>Adresa kandidata</label>
-                <input type="text" placeholder="Npr. Ulica i broj, Grad" />
+                <input type="text" placeholder="Npr. Ulica i broj, Grad" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
               </div>
               <div className="input-group">
                 <label>Datum rođenja</label>
-                <input type="date" />
+                <input type="date" value={formData.birthDate} onChange={e => setFormData({...formData, birthDate: e.target.value})} />
               </div>
               <div className="input-group">
                 <label>Zakazan razgovor (Datum i vreme)</label>
@@ -88,7 +113,7 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
 
         <div className="modal-footer">
           <button className="btn-secondary" onClick={onClose}>Odustani</button>
-          <button className="btn-primary" onClick={handleSave}>Sačuvaj Kandidata</button>
+          <button className="btn-primary" onClick={handleSave}>{initialData ? 'Sačuvaj Izmene' : 'Sačuvaj Kandidata'}</button>
         </div>
       </div>
     </div>

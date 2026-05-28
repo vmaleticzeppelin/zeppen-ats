@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Plus, FileText, Phone, Trash2, PlayCircle } from 'lucide-react';
+import { Search, Filter, Plus, FileText, Phone, Trash2, PlayCircle, Edit } from 'lucide-react';
 import AddCandidateModal from '../components/AddCandidateModal';
 import { useAuth } from '../context/AuthContext';
 import { useCandidates } from '../context/CandidateContext';
@@ -20,8 +20,11 @@ const Candidates: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Svi');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { candidates, addCandidate, deleteCandidate } = useCandidates();
+  const [editingCandidate, setEditingCandidate] = useState<any>(null);
+  const { candidates, addCandidate, updateCandidate, deleteCandidate } = useCandidates();
   const { evaluations } = useEvaluations();
+
+  const canEditOrDelete = currentUser !== 'Zorica';
 
   const filteredCandidates = candidates.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -30,13 +33,22 @@ const Candidates: React.FC = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const handleAddCandidate = (newCandidate: any) => {
-    addCandidate(newCandidate);
+  const handleAddOrEditCandidate = (candidateData: any) => {
+    if (editingCandidate) {
+      updateCandidate(candidateData.id, candidateData);
+    } else {
+      addCandidate(candidateData);
+    }
   };
 
   return (
     <div className="candidates-container">
-      <AddCandidateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleAddCandidate} />
+      <AddCandidateModal 
+        isOpen={isModalOpen} 
+        onClose={() => { setIsModalOpen(false); setEditingCandidate(null); }} 
+        onSave={handleAddOrEditCandidate} 
+        initialData={editingCandidate}
+      />
       
       <div className="page-header">
         <div className="header-info">
@@ -156,15 +168,24 @@ const Candidates: React.FC = () => {
                       }}>
                         <FileText size={18} />
                       </button>
-                      {currentUser === 'Admin' && (
-                        <button className="action-btn" title="Obriši" onClick={(e) => {
-                          e.stopPropagation();
-                          if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
-                            deleteCandidate(c.id);
-                          }
-                        }}>
-                          <Trash2 size={18} style={{color: 'var(--danger)'}} />
-                        </button>
+                      {canEditOrDelete && (
+                        <>
+                          <button className="action-btn" title="Izmeni" onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingCandidate(c);
+                            setIsModalOpen(true);
+                          }}>
+                            <Edit size={18} style={{color: '#3B82F6'}} />
+                          </button>
+                          <button className="action-btn" title="Obriši" onClick={(e) => {
+                            e.stopPropagation();
+                            if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
+                              deleteCandidate(c.id);
+                            }
+                          }}>
+                            <Trash2 size={18} style={{color: 'var(--danger)'}} />
+                          </button>
+                        </>
                       )}
                     </div>
                   </td>
