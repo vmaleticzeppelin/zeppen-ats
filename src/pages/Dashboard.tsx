@@ -65,8 +65,16 @@ const Dashboard: React.FC = () => {
     };
 
     candidates.forEach(c => {
-      if (pipelineCounts.hasOwnProperty(c.status)) {
-        pipelineCounts[c.status as keyof typeof pipelineCounts]++;
+      if (c.status === 'Neocenjen') {
+        pipelineCounts['Neocenjen']++;
+      } else if (c.status.includes('Prvi krug')) {
+        pipelineCounts['Prvi krug']++;
+      } else if (c.status.includes('Drugi krug')) {
+        pipelineCounts['Drugi krug']++;
+      } else if (c.status.includes('Finalni krug')) {
+        pipelineCounts['Finalni krug']++;
+      } else if (c.status === 'Ponuda') {
+        pipelineCounts['Ponuda']++;
       }
     });
 
