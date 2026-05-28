@@ -18,7 +18,6 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
 
   const handleSave = () => {
     onSave({
-      id: Date.now(),
       name: formData.name || 'Novi Kandidat',
       email: formData.email || '-',
       phone: formData.phone || '-',

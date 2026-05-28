@@ -32,8 +32,8 @@ export const CandidateProvider: React.FC<{ children: ReactNode }> = ({ children 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'candidates'), (snapshot) => {
       const fetched = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
+        ...doc.data(),
+        id: doc.id
       })) as Candidate[];
       setCandidates(fetched);
     });
