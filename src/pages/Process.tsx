@@ -118,6 +118,22 @@ const Process: React.FC = () => {
         {activeTab === 'admin-pregled' && currentUser === 'Admin' && (
           <div className="card" style={{padding: '2rem'}}>
             <AdminFirstRoundViewWrapper candidateId={candidate.id} />
+            
+            {candidate.status !== 'Drugi krug' && candidate.status !== 'Zaposlen' && candidate.status !== 'Odbijen' && (
+              <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #383D47', paddingTop: '1.5rem' }}>
+                <button 
+                  className="btn-primary" 
+                  onClick={() => {
+                    if(window.confirm('Da li ste sigurni da želite da prebacite kandidata u Drugi krug?')) {
+                      updateCandidate(candidate.id, { status: 'Drugi krug' });
+                      setActiveTab('drugi-krug');
+                    }
+                  }}
+                >
+                  Prebaci u Drugi krug
+                </button>
+              </div>
+            )}
           </div>
         )}
 

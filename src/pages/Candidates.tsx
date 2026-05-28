@@ -79,6 +79,7 @@ const Candidates: React.FC = () => {
               <option value="Svi">Svi statusi</option>
               <option value="Novi kandidat">Novi kandidat</option>
               <option value="Prvi krug">Prvi krug</option>
+              <option value="Drugi krug">Drugi krug</option>
               <option value="Zaposlen">Zaposlen</option>
               <option value="Odbijen">Odbijen</option>
               <option value="Probni rad">Probni rad</option>

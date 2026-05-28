@@ -56,10 +56,17 @@ const Sidebar: React.FC = () => {
           </NavLink>
           
           {currentUser !== 'Zorica' && (
-            <NavLink to="/process" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-              <UserCheck className="nav-icon" size={20} />
-              <span>Prvi krug</span>
-            </NavLink>
+            <>
+              <NavLink to="/process" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+                <UserCheck className="nav-icon" size={20} />
+                <span>Prvi krug</span>
+              </NavLink>
+              
+              <NavLink to="/second-round" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+                <Users className="nav-icon" size={20} />
+                <span>Drugi krug</span>
+              </NavLink>
+            </>
           )}
 
           <NavLink to="/candidates" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
