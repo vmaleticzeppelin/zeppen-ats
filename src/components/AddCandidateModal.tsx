@@ -57,8 +57,8 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
                 <input type="text" placeholder="06x/xxx-xxxx" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
               </div>
               <div className="input-group">
-                <label>Grad</label>
-                <input type="text" placeholder="Npr. Beograd" />
+                <label>Adresa kandidata</label>
+                <input type="text" placeholder="Npr. Ulica i broj, Grad" />
               </div>
               <div className="input-group">
                 <label>Datum rođenja</label>
