@@ -263,8 +263,10 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
             <div className="script-box highlight">
               <span className="badge badge-primary">SKRIPTA ZA INTERVJERA:</span>
               <p><em>"Dobrodošli i hvala što ste došli."</em></p>
-              <p><em>"Mi smo Zeppelin Pro iz Beograda i bavimo se reklamnim materijalom, poslovnim poklonima i brandingom za kompanije."</em></p>
-              <p><em>"Posao kod nas je veoma dinamičan i uključuje: dosta komunikacije, koordinacije, rada sa klijentima, rešavanja problema, rada pod pritiskom, multitasking, i organizaciju velikog broja detalja."</em></p>
+              <p><em>"Mi smo Zeppelin Pro iz Beograda i bavimo se reklamnim materijalom, poslovnim poklonima i brandingom za kompanije. Više od 10 godina sarađujemo sa velikim brojem domaćih i internacionalnih firmi."</em></p>
+              <p><em>"Posao kod nas je veoma dinamičan i uključuje dosta komunikacije, koordinacije, rada sa klijentima, rešavanja problema, rada pod pritiskom, multitasking i organizaciju velikog broja detalja."</em></p>
+              <p><em>"Naši klijenti često imaju kratke rokove, specifične zahteve i očekuju brzu i profesionalnu reakciju, tako da nam je veoma važna organizovanost, odgovornost i način komunikacije."</em></p>
+              <p><em>"Ovo nije klasičan kancelarijski posao gde se svaki dan ponavlja isto, već pozicija za osobu koja voli dinamično okruženje, zna da razmišlja unapred, preuzima odgovornost i održava dobar odnos sa klijentima i kolegama."</em></p>
             </div>
           </div>
         )}
