@@ -42,6 +42,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
   const [redFlags, setRedFlags] = useState<Record<string, string>>({});
   const [arrivedOnTime, setArrivedOnTime] = useState<boolean | null>(null);
   const [recommendation, setRecommendation] = useState<string | null>(null);
+  const [showOwnershipModal, setShowOwnershipModal] = useState(false);
 
   // Učitaj prethodne podatke kada se promeni korisnik
   useEffect(() => {
@@ -122,7 +123,15 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
               <p><strong>U Zeppelin Pro najvažnije su:</strong></p>
               <div className="tags-grid">
                 <span>Energija</span><span>Organizacija</span><span>Brzina razmišljanja</span>
-                <span>Stabilnost pod pritiskom</span><span>Ownership</span><span>Profesionalnost</span>
+                <span>Stabilnost pod pritiskom</span>
+                <span 
+                  onClick={() => setShowOwnershipModal(true)}
+                  style={{ cursor: 'pointer', background: 'rgba(99, 102, 241, 0.15)', border: '1px solid var(--color-primary)', color: 'var(--color-primary)' }}
+                  title="Klikni za objašnjenje"
+                >
+                  Ownership <Info size={14} style={{ display: 'inline', verticalAlign: 'text-bottom' }} />
+                </span>
+                <span>Profesionalnost</span>
                 <span>Multitasking</span><span>Otpornost na odbijanje</span><span>Komunikacija</span>
               </div>
               
@@ -523,6 +532,67 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
           </button>
         )}
       </div>
+
+      {/* Ownership Modal */}
+      {showOwnershipModal && (
+        <div className="modal-overlay" onClick={() => setShowOwnershipModal(false)}>
+          <div className="modal-content card" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', maxHeight: '85vh', overflowY: 'auto' }}>
+            <div className="modal-header">
+              <h2>Ownership Mindset</h2>
+              <button className="btn-close" onClick={() => setShowOwnershipModal(false)}><XCircle size={24} /></button>
+            </div>
+            <div className="modal-body" style={{ lineHeight: '1.6', fontSize: '0.95rem' }}>
+              <p><strong>Ownership mindset</strong> predstavlja način razmišljanja kod osobe koja preuzima odgovornost za posao, rezultate i rešavanje problema, bez traženja izgovora ili prebacivanja krivice na druge.</p>
+              
+              <h4 style={{ marginTop: '1.5rem', marginBottom: '0.5rem', color: 'var(--danger)' }}>Osoba sa ownership mindset-om NE razmišlja:</h4>
+              <ul style={{ marginBottom: '1.5rem', listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+                <li>„To nije moj posao.“</li>
+                <li>„Nisam ja kriv.“</li>
+                <li>„Niko mi nije rekao.“</li>
+              </ul>
+
+              <h4 style={{ marginTop: '1.5rem', marginBottom: '0.5rem', color: 'var(--success)' }}>Već razmišlja:</h4>
+              <ul style={{ marginBottom: '1.5rem', listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+                <li>„Kako mogu da rešim problem?“</li>
+                <li>„Šta mogu da uradim da posao uspe?“</li>
+                <li>„Kako da pomognem timu i klijentu?“</li>
+              </ul>
+
+              <h4 style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>Takva osoba:</h4>
+              <ul style={{ marginBottom: '1.5rem', listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+                <li>preuzima inicijativu,</li>
+                <li>vodi računa o rokovima,</li>
+                <li>sama prati zadatke do kraja,</li>
+                <li>razmišlja unapred,</li>
+                <li>traži rešenja umesto krivca,</li>
+                <li>ponaša se odgovorno prema firmi, klijentima i kolegama.</li>
+              </ul>
+
+              <p style={{ marginBottom: '1.5rem' }}>Ownership mindset ne znači da osoba mora sve sama da radi, već da oseća odgovornost za krajnji rezultat i aktivno učestvuje u rešavanju problema.</p>
+
+              <div style={{ background: 'var(--color-bg-alt)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', borderLeft: '4px solid var(--color-primary)' }}>
+                <h4 style={{ marginTop: 0, marginBottom: '0.5rem' }}>Primer ownership mindset-a:</h4>
+                <p style={{ margin: '0 0 0.5rem 0', color: 'var(--danger)' }}><strong>Umesto:</strong><br/>„Dobavljač kasni, nije do mene.“</p>
+                <p style={{ margin: 0, color: 'var(--success)' }}><strong>Osoba sa ownership mindset-om kaže:</strong><br/>„Dobavljač kasni. Kontaktiraću ga odmah, obavestiću klijenta i pronaći alternativu kako bismo smanjili problem.“</p>
+              </div>
+
+              <p style={{ marginBottom: '1rem' }}>U poslovnom okruženju, posebno u prodaji, logistici, organizaciji i radu sa klijentima, ownership mindset je jedna od najvažnijih osobina jer omogućava:</p>
+              <ul style={{ marginBottom: '1.5rem', listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+                <li>veću pouzdanost,</li>
+                <li>bolju organizaciju,</li>
+                <li>manje kontrole od strane menadžmenta,</li>
+                <li>brže rešavanje problema,</li>
+                <li>kvalitetniju komunikaciju sa klijentima i timom.</li>
+              </ul>
+
+              <p style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>Cilj ownership mindset-a je da zaposleni ne bude samo izvršilac zadataka, već osoba koja aktivno doprinosi uspehu firme i razmišlja kao deo tima koji zajedno ostvaruje rezultat.</p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-primary" onClick={() => setShowOwnershipModal(false)}>Razumem</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
