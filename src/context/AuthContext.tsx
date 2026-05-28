@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
 import { auth } from '../firebase/config';
 
-export type UserRole = 'Admin' | 'Branislav' | 'Dusan' | null;
+export type UserRole = 'Admin' | 'Branislav' | 'Dusan' | 'Zorica' | null;
 
 interface AuthContextType {
   currentUser: UserRole;
@@ -27,6 +27,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setCurrentUser('Branislav');
         } else if (email === 'dusan.resanovic@zeppelin.rs' || email === 'dusan.resanovic@zepppelin.rs') {
           setCurrentUser('Dusan');
+        } else if (email === 'zorica@zeppelin.rs') {
+          setCurrentUser('Zorica');
         } else {
           setCurrentUser(null); // Unknown users get blocked
         }

@@ -49,20 +49,24 @@ const Sidebar: React.FC = () => {
             <span>Dashboard</span>
           </NavLink>
           
-          <NavLink to="/process" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-            <UserCheck className="nav-icon" size={20} />
-            <span>Prvi krug</span>
-          </NavLink>
+          {currentUser !== 'Zorica' && (
+            <NavLink to="/process" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <UserCheck className="nav-icon" size={20} />
+              <span>Prvi krug</span>
+            </NavLink>
+          )}
 
           <NavLink to="/candidates" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <Users className="nav-icon" size={20} />
             <span>Kandidati</span>
           </NavLink>
           
-          <NavLink to="/compare" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-            <BarChart2 className="nav-icon" size={20} />
-            <span>Poređenje</span>
-          </NavLink>
+          {currentUser !== 'Zorica' && (
+            <NavLink to="/compare" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <BarChart2 className="nav-icon" size={20} />
+              <span>Poređenje</span>
+            </NavLink>
+          )}
         </div>
         
         <div className="nav-group">
@@ -81,7 +85,7 @@ const Sidebar: React.FC = () => {
           </div>
           <div className="user-info">
             <strong>{currentUser}</strong>
-            <span>{currentUser === 'Admin' ? 'Administrator' : 'Intervjuer'}</span>
+            <span>{currentUser === 'Admin' ? 'Administrator' : currentUser === 'Zorica' ? 'HR / Unos' : 'Intervjuer'}</span>
           </div>
           <button className="logout-btn" onClick={handleLogout} title="Odjavi se" style={{background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', marginLeft: 'auto'}}>
             <LogOut size={18} />

@@ -48,20 +48,24 @@ const Process: React.FC = () => {
         <button className={`tab-btn ${activeTab === 'osnovni-podaci' ? 'active' : ''}`} onClick={() => setActiveTab('osnovni-podaci')}>
           Osnovni Podaci
         </button>
-        <button className={`tab-btn ${activeTab === 'prvi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('prvi-krug')}>
-          1. Prvi krug (Uživo)
-        </button>
-        {currentUser === 'Admin' && (
-          <button className={`tab-btn ${activeTab === 'admin-pregled' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled')}>
-            [ADMIN] Uporedni prikaz ocena
-          </button>
+        {currentUser !== 'Zorica' && (
+          <>
+            <button className={`tab-btn ${activeTab === 'prvi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('prvi-krug')}>
+              1. Prvi krug (Uživo)
+            </button>
+            {currentUser === 'Admin' && (
+              <button className={`tab-btn ${activeTab === 'admin-pregled' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled')}>
+                [ADMIN] Uporedni prikaz ocena
+              </button>
+            )}
+            <button className={`tab-btn ${activeTab === 'drugi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('drugi-krug')}>
+              2. Drugi krug (Napredno)
+            </button>
+            <button className={`tab-btn ${activeTab === 'treci-krug' ? 'active' : ''}`} onClick={() => setActiveTab('treci-krug')}>
+              3. Probni rad (3-5 dana)
+            </button>
+          </>
         )}
-        <button className={`tab-btn ${activeTab === 'drugi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('drugi-krug')}>
-          2. Drugi krug (Napredno)
-        </button>
-        <button className={`tab-btn ${activeTab === 'treci-krug' ? 'active' : ''}`} onClick={() => setActiveTab('treci-krug')}>
-          3. Probni rad (3-5 dana)
-        </button>
       </div>
 
       <div className="process-content">
@@ -99,9 +103,11 @@ const Process: React.FC = () => {
               />
             </div>
 
-            <div style={{marginTop: '2rem', display: 'flex', justifyContent: 'flex-end'}}>
-              <button className="btn-primary" onClick={() => setActiveTab('prvi-krug')}>Započni Prvi Krug</button>
-            </div>
+            {currentUser !== 'Zorica' && (
+              <div style={{marginTop: '2rem', display: 'flex', justifyContent: 'flex-end'}}>
+                <button className="btn-primary" onClick={() => setActiveTab('prvi-krug')}>Započni Prvi Krug</button>
+              </div>
+            )}
           </div>
         )}
 

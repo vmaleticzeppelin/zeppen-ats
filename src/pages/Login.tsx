@@ -8,7 +8,8 @@ const ALLOWED_EMAILS = [
   'veljko.maletic@zeppelin.rs',
   'branislav.milosevic@zeppelin.rs',
   'dusan.resanovic@zeppelin.rs',
-  'dusan.resanovic@zepppelin.rs'
+  'dusan.resanovic@zepppelin.rs',
+  'zorica@zeppelin.rs'
 ];
 
 const Login: React.FC = () => {
@@ -95,7 +96,7 @@ const Login: React.FC = () => {
               placeholder="ime.prezime@zeppelin.rs"
               required 
             />
-            {isRegister && <small style={{color: '#A0A5B1', marginTop: '4px', display: 'block'}}>Unesite vaš zvanični Zeppelin email (veljko, branislav ili dusan).</small>}
+            {isRegister && <small style={{color: '#A0A5B1', marginTop: '4px', display: 'block'}}>Unesite vaš zvanični Zeppelin email (veljko, branislav, dusan ili zorica).</small>}
           </div>
 
           <div className="form-group">
