@@ -24,8 +24,6 @@ const Candidates: React.FC = () => {
   const { candidates, addCandidate, updateCandidate, deleteCandidate } = useCandidates();
   const { evaluations } = useEvaluations();
 
-  const canEditOrDelete = currentUser !== 'Zorica';
-
   const filteredCandidates = candidates.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           c.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -168,25 +166,30 @@ const Candidates: React.FC = () => {
                       }}>
                         <FileText size={18} />
                       </button>
-                      {canEditOrDelete && (
-                        <>
-                          <button className="action-btn" title="Izmeni" onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingCandidate(c);
-                            setIsModalOpen(true);
-                          }}>
-                            <Edit size={18} style={{color: '#3B82F6'}} />
-                          </button>
-                          <button className="action-btn" title="Obriši" onClick={(e) => {
-                            e.stopPropagation();
-                            if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
-                              deleteCandidate(c.id);
-                            }
-                          }}>
-                            <Trash2 size={18} style={{color: 'var(--danger)'}} />
-                          </button>
-                        </>
-                      )}
+                      
+                      {(() => {
+                        const isFinishedFirstRound = c.status !== 'Neocenjen' && c.status !== 'Novi kandidat' && c.status !== 'Zakazan prvi razgovor';
+                        const canModify = currentUser === 'Admin' || (currentUser !== 'Zorica' && !isFinishedFirstRound);
+                        return canModify ? (
+                          <>
+                            <button className="action-btn" title="Izmeni" onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingCandidate(c);
+                              setIsModalOpen(true);
+                            }}>
+                              <Edit size={18} style={{color: '#3B82F6'}} />
+                            </button>
+                            <button className="action-btn" title="Obriši" onClick={(e) => {
+                              e.stopPropagation();
+                              if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
+                                deleteCandidate(c.id);
+                              }
+                            }}>
+                              <Trash2 size={18} style={{color: 'var(--danger)'}} />
+                            </button>
+                          </>
+                        ) : null;
+                      })()}
                     </div>
                   </td>
                 </tr>
