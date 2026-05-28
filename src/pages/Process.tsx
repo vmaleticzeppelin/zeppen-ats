@@ -80,7 +80,6 @@ const Process: React.FC = () => {
                 <p><strong>Telefon:</strong> {candidate.phone}</p>
               </div>
               <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
-                <p><strong>Izvor prijave:</strong> {candidate.source}</p>
                 <p><strong>Datum prijave:</strong> {candidate.appliedDate}</p>
                 {candidate.interviewDate && (
                   <p><strong>Zakazan razgovor:</strong> {new Date(candidate.interviewDate).toLocaleString('sr-RS', { dateStyle: 'medium', timeStyle: 'short' })}</p>

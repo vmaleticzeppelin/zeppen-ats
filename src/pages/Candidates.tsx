@@ -84,7 +84,7 @@ const Candidates: React.FC = () => {
                 <th>Kontakt</th>
                 <th>Status</th>
                 <th>Score</th>
-                <th>Prijava / Izvor</th>
+                <th>Datum prijave</th>
                 <th>Akcije</th>
               </tr>
             </thead>
@@ -138,7 +138,6 @@ const Candidates: React.FC = () => {
                   <td>
                     <div className="source-cell">
                       <span>{c.appliedDate}</span>
-                      <span className="c-source">{c.source}</span>
                     </div>
                   </td>
                   <td>
