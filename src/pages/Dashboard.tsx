@@ -7,6 +7,10 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { db, auth } from '../firebase/config';
+import { useAuth } from '../context/AuthContext';
 import { scoreRadarData } from '../data/mockData';
 import { useCandidates } from '../context/CandidateContext';
 import './Dashboard.css';
@@ -14,6 +18,37 @@ import './Dashboard.css';
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { candidates } = useCandidates();
+  const { currentUser } = useAuth();
+  
+  const [passwordRequests, setPasswordRequests] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (currentUser === 'Admin') {
+      const fetchRequests = async () => {
+        try {
+          const q = query(collection(db, 'password_reset_requests'), where('status', '==', 'pending'));
+          const querySnapshot = await getDocs(q);
+          const reqs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setPasswordRequests(reqs);
+        } catch (error) {
+          console.error('Greška pri učitavanju zahteva za šifru:', error);
+        }
+      };
+      fetchRequests();
+    }
+  }, [currentUser]);
+
+  const handleApproveRequest = async (id: string, email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      const requestRef = doc(db, 'password_reset_requests', id);
+      await updateDoc(requestRef, { status: 'approved' });
+      setPasswordRequests(prev => prev.filter(req => req.id !== id));
+      alert(`Odobreno! Email za promenu šifre je poslat na ${email}.`);
+    } catch (error: any) {
+      alert('Greška prilikom odobravanja: ' + error.message);
+    }
+  };
 
   const stats = useMemo(() => {
     const active = candidates.filter(c => c.status !== 'Odbijen' && c.status !== 'Zaposlen').length;
@@ -135,6 +170,34 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="side-panels">
+          {currentUser === 'Admin' && passwordRequests.length > 0 && (
+            <div className="card list-card" style={{ marginBottom: '1.5rem', borderColor: '#3B82F6' }}>
+              <div className="card-header">
+                <h3>Zahtevi za šifru</h3>
+                <span className="badge" style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6', fontSize: '0.8rem', padding: '2px 8px', borderRadius: '12px' }}>{passwordRequests.length} na čekanju</span>
+              </div>
+              <div className="candidate-list">
+                {passwordRequests.map(req => (
+                  <div key={req.id} className="candidate-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="c-info">
+                      <span className="c-name" style={{ fontSize: '0.9rem' }}>{req.email}</span>
+                      <span className="c-phase" style={{ fontSize: '0.8rem' }}>Zatraženo: {new Date(req.requestedAt).toLocaleDateString('sr-RS')}</span>
+                    </div>
+                    <div>
+                      <button 
+                        onClick={() => handleApproveRequest(req.id, req.email)}
+                        className="btn-primary" 
+                        style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+                      >
+                        Odobri
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="card list-card">
             <div className="card-header">
               <h3>Top Kandidati</h3>

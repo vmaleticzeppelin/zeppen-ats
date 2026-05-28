@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { addDoc, collection } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
 import './Login.css';
 
 const ALLOWED_EMAILS = [
@@ -67,10 +68,14 @@ const Login: React.FC = () => {
     }
 
     try {
-      await sendPasswordResetEmail(auth, emailLower);
-      setMessage(`Link za promenu šifre je poslat na ${emailLower}. Proverite svoj inbox (i spam folder).`);
+      await addDoc(collection(db, 'password_reset_requests'), {
+        email: emailLower,
+        status: 'pending',
+        requestedAt: new Date().toISOString()
+      });
+      setMessage(`Zahtev za promenu šifre je poslat na odobrenje administratoru. Kada odobri, stići će vam link na ${emailLower}.`);
     } catch (err: any) {
-      setError('Greška prilikom slanja linka: ' + err.message);
+      setError('Greška prilikom slanja zahteva: ' + err.message);
     }
   };
 
