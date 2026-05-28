@@ -3,12 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { UserCheck, Briefcase, FileText, User, ArrowLeft } from 'lucide-react';
 import FirstRoundWizard from '../components/FirstRoundWizard';
 import { useCandidates } from '../context/CandidateContext';
+import { useAuth } from '../context/AuthContext';
+import { useEvaluations } from '../context/EvaluationContext';
+import AdminFirstRoundView from '../components/AdminFirstRoundView';
 import './Process.css';
 
 const Process: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getCandidateById, updateCandidate } = useCandidates();
+  const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('osnovni-podaci');
   
   const candidate = id ? getCandidateById(id) : null;
@@ -47,6 +51,11 @@ const Process: React.FC = () => {
         <button className={`tab-btn ${activeTab === 'prvi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('prvi-krug')}>
           1. Prvi krug (Uživo)
         </button>
+        {currentUser === 'Admin' && (
+          <button className={`tab-btn ${activeTab === 'admin-pregled' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled')}>
+            [ADMIN] Uporedni prikaz ocena
+          </button>
+        )}
         <button className={`tab-btn ${activeTab === 'drugi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('drugi-krug')}>
           2. Drugi krug (Napredno)
         </button>
@@ -98,6 +107,12 @@ const Process: React.FC = () => {
 
         {activeTab === 'prvi-krug' && <FirstRoundWizard candidateId={candidate.id} />}
         
+        {activeTab === 'admin-pregled' && currentUser === 'Admin' && (
+          <div className="card" style={{padding: '2rem'}}>
+            <AdminFirstRoundViewWrapper candidateId={candidate.id} />
+          </div>
+        )}
+
         {activeTab === 'drugi-krug' && (
           <div className="evaluation-form empty-tab">
             <UserCheck size={48} className="empty-icon" />
@@ -116,6 +131,16 @@ const Process: React.FC = () => {
       </div>
     </div>
   );
+};
+
+// Helper komponenta za ucitavanje podataka za Admin pregled
+const AdminFirstRoundViewWrapper = ({ candidateId }: { candidateId: string | number }) => {
+  const { getEvaluation } = useEvaluations();
+  
+  const branislav = getEvaluation(String(candidateId), 'Branislav');
+  const dusan = getEvaluation(String(candidateId), 'Dusan');
+  
+  return <AdminFirstRoundView branislavData={branislav} dusanData={dusan} />;
 };
 
 export default Process;

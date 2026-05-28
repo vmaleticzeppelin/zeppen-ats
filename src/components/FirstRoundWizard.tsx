@@ -41,7 +41,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
 
   // Učitaj prethodne podatke kada se promeni korisnik
   useEffect(() => {
-    if (currentUser === 'Branislav' || currentUser === 'Dusan') {
+    if (currentUser === 'Branislav' || currentUser === 'Dusan' || currentUser === 'Admin') {
       const existing = getEvaluation(String(candidateId), currentUser);
       if (existing) {
         setScores(existing.scores || {});
@@ -52,13 +52,6 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
     }
   }, [currentUser, candidateId]);
 
-  // Ako je ulogovan Admin, renderujemo drugi ekran
-  if (currentUser === 'Admin') {
-    const branislav = getEvaluation(String(candidateId), 'Branislav');
-    const dusan = getEvaluation(String(candidateId), 'Dusan');
-    return <AdminFirstRoundView branislavData={branislav} dusanData={dusan} />;
-  }
-
   const handleScore = (key: string, val: number) => setScores({ ...scores, [key]: val });
   const handleNote = (key: string, val: string) => setNotes({ ...notes, [key]: val });
   const handleRedFlag = (key: string, val: string) => setRedFlags({ ...redFlags, [key]: val });
@@ -67,7 +60,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
   const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
 
   const handleSaveAll = () => {
-    if (currentUser === 'Branislav' || currentUser === 'Dusan') {
+    if (currentUser === 'Branislav' || currentUser === 'Dusan' || currentUser === 'Admin') {
       saveEvaluation(String(candidateId), currentUser, { scores, notes, redFlags, recommendation });
       alert('Uspešno sačuvano za: ' + currentUser);
     }
