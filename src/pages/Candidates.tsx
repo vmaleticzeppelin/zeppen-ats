@@ -169,26 +169,31 @@ const Candidates: React.FC = () => {
                       
                       {(() => {
                         const isFinishedFirstRound = c.status !== 'Neocenjen' && c.status !== 'Novi kandidat' && c.status !== 'Zakazan prvi razgovor';
-                        const canModify = currentUser === 'Admin' || (currentUser !== 'Zorica' && !isFinishedFirstRound);
-                        return canModify ? (
+                        const canEdit = currentUser !== 'Zorica';
+                        const canDelete = currentUser === 'Admin' || (currentUser !== 'Zorica' && !isFinishedFirstRound);
+                        return (
                           <>
-                            <button className="action-btn" title="Izmeni" onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingCandidate(c);
-                              setIsModalOpen(true);
-                            }}>
-                              <Edit size={18} style={{color: '#3B82F6'}} />
-                            </button>
-                            <button className="action-btn" title="Obriši" onClick={(e) => {
-                              e.stopPropagation();
-                              if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
-                                deleteCandidate(c.id);
-                              }
-                            }}>
-                              <Trash2 size={18} style={{color: 'var(--danger)'}} />
-                            </button>
+                            {canEdit && (
+                              <button className="action-btn" title="Izmeni" onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingCandidate(c);
+                                setIsModalOpen(true);
+                              }}>
+                                <Edit size={18} style={{color: '#3B82F6'}} />
+                              </button>
+                            )}
+                            {canDelete && (
+                              <button className="action-btn" title="Obriši" onClick={(e) => {
+                                e.stopPropagation();
+                                if(window.confirm('Da li ste sigurni da želite da obrišete ovog kandidata?')) {
+                                  deleteCandidate(c.id);
+                                }
+                              }}>
+                                <Trash2 size={18} style={{color: 'var(--danger)'}} />
+                              </button>
+                            )}
                           </>
-                        ) : null;
+                        );
                       })()}
                     </div>
                   </td>

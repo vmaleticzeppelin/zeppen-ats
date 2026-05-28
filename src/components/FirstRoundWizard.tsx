@@ -43,9 +43,6 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
   const [arrivedOnTime, setArrivedOnTime] = useState<boolean | null>(null);
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [showOwnershipModal, setShowOwnershipModal] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const isLocked = isSubmitted && currentUser !== 'Admin';
 
   // Učitaj prethodne podatke kada se promeni korisnik
   useEffect(() => {
@@ -58,7 +55,6 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
         setRecommendation(existing.recommendation || null);
         if (existing.notes?.arrivedOnTime === 'DA') setArrivedOnTime(true);
         else if (existing.notes?.arrivedOnTime === 'NE') setArrivedOnTime(false);
-        setIsSubmitted(true);
       }
     }
   }, [currentUser, candidateId]);
@@ -116,13 +112,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
         ))}
       </div>
 
-      {isLocked && (
-        <div style={{ padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', textAlign: 'center', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #EF4444' }}>
-          Već ste sačuvali ovu procenu. Samo Administrator može da menja unete podatke nakon završetka.
-        </div>
-      )}
-
-      <div className="wizard-content card" style={{ pointerEvents: isLocked ? 'none' : 'auto', opacity: isLocked ? 0.8 : 1 }}>
+      <div className="wizard-content card">
         
         {/* STEP 0: UVOD */}
         {step === 0 && (
@@ -537,11 +527,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
             {step === 0 ? "Pređi na pitanja" : "Sledeći Korak"} <ChevronRight size={18} />
           </button>
         ) : (
-          <button 
-            className={`btn-primary success-btn ${isLocked ? 'disabled' : ''}`} 
-            onClick={handleSaveAll}
-            disabled={isLocked}
-          >
+          <button className="btn-primary success-btn" onClick={handleSaveAll}>
             Završi i Sačuvaj Procenu <CheckCircle size={18} />
           </button>
         )}
