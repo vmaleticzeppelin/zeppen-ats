@@ -563,7 +563,7 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
                         onClick={() => setRecommendation(String(num))}
                         style={{ padding: '0.25rem', cursor: 'pointer', border: 'none', background: 'none' }}
                       >
-                        <Star size={32} fill={Number(recommendation) >= num ? "var(--warning)" : "none"} stroke={Number(recommendation) >= num ? "var(--warning)" : "var(--color-text-muted)"} />
+                        <Star size={32} fill={Number(recommendation) >= num ? "var(--warning)" : "none"} stroke={Number(recommendation) >= num ? "var(--warning)" : "rgba(255,255,255,0.4)"} strokeWidth={2} />
                       </button>
                     ))}
                   </div>
