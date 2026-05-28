@@ -21,14 +21,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user && user.email) {
         const email = user.email.toLowerCase();
-        if (email.includes('admin@')) {
+        if (email === 'veljko.maletic@zeppelin.rs') {
           setCurrentUser('Admin');
-        } else if (email.includes('branislav@')) {
+        } else if (email === 'branislav.milosevic@zeppelin.rs') {
           setCurrentUser('Branislav');
-        } else if (email.includes('dusan@')) {
+        } else if (email === 'dusan.resanovic@zeppelin.rs' || email === 'dusan.resanovic@zepppelin.rs') {
           setCurrentUser('Dusan');
         } else {
-          setCurrentUser('Admin'); // Default fallback
+          setCurrentUser(null); // Unknown users get blocked
         }
       } else {
         setCurrentUser(null);
