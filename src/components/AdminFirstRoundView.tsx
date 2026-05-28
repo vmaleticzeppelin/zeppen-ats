@@ -19,6 +19,36 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ branislavData, dusanDat
     return count === 0 ? 0 : Math.round((sum / count) * 20); // out of 100
   };
 
+  const calcIndividualAvg = (data: EvaluationData | undefined, keys: string[]) => {
+    if (!data) return 0;
+    let sum = 0;
+    let count = 0;
+    keys.forEach(k => {
+      if (data.scores[k]) { sum += data.scores[k]; count++; }
+    });
+    return count === 0 ? 0 : Math.round((sum / count) * 20);
+  };
+
+  const bRadar = [
+    { A: calcIndividualAvg(branislavData, ['s1_energija', 's3_energija', 's4_energija', 's5_energija']) },
+    { A: calcIndividualAvg(branislavData, ['s1_komunikativnost', 's3_jasnoca', 's5_sigurnost', 's5_prirodnost', 's9_komunikacija']) },
+    { A: calcIndividualAvg(branislavData, ['s6_organizacija', 's8_organizovanost', 's8_sistematicnost', 's9_organizacija']) },
+    { A: calcIndividualAvg(branislavData, ['s6_stabilnost', 's7_stabilnost', 's7_smirenost', 's9_stabilnost']) },
+    { A: calcIndividualAvg(branislavData, ['s5_prodajni', 's6_ownership', 's7_ownership', 's9_ownership']) },
+    { A: calcIndividualAvg(branislavData, ['s8_disciplina', 's8_crm', 's8_preciznost']) }
+  ];
+  const bScore = branislavData ? Math.round(bRadar.reduce((acc, curr) => acc + curr.A, 0) / 6) : 0;
+
+  const dRadar = [
+    { A: calcIndividualAvg(dusanData, ['s1_energija', 's3_energija', 's4_energija', 's5_energija']) },
+    { A: calcIndividualAvg(dusanData, ['s1_komunikativnost', 's3_jasnoca', 's5_sigurnost', 's5_prirodnost', 's9_komunikacija']) },
+    { A: calcIndividualAvg(dusanData, ['s6_organizacija', 's8_organizovanost', 's8_sistematicnost', 's9_organizacija']) },
+    { A: calcIndividualAvg(dusanData, ['s6_stabilnost', 's7_stabilnost', 's7_smirenost', 's9_stabilnost']) },
+    { A: calcIndividualAvg(dusanData, ['s5_prodajni', 's6_ownership', 's7_ownership', 's9_ownership']) },
+    { A: calcIndividualAvg(dusanData, ['s8_disciplina', 's8_crm', 's8_preciznost']) }
+  ];
+  const dScore = dusanData ? Math.round(dRadar.reduce((acc, curr) => acc + curr.A, 0) / 6) : 0;
+
   const radarData = [
     { subject: 'Energija', A: calcAvg(['s1_energija', 's3_energija', 's4_energija', 's5_energija']), fullMark: 100 },
     { subject: 'Komunikacija', A: calcAvg(['s1_komunikativnost', 's3_jasnoca', 's5_sigurnost', 's5_prirodnost', 's9_komunikacija']), fullMark: 100 },
@@ -38,7 +68,10 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ branislavData, dusanDat
         <div className="admin-notes">
           <div className="split-view">
             <div className="evaluator-column">
-              <h3 style={{color: 'var(--color-primary)'}}>Branislav (Intervjuer 1)</h3>
+              <h3 style={{color: 'var(--color-primary)', display: 'flex', justifyContent: 'space-between'}}>
+                <span>Branislav</span>
+                {branislavData && <span className="badge badge-primary">{bScore}% Score</span>}
+              </h3>
               {branislavData ? (
                 <>
                   <div className="admin-note-box">
@@ -61,7 +94,10 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ branislavData, dusanDat
             </div>
 
             <div className="evaluator-column">
-              <h3 style={{color: '#8b5cf6'}}>Dušan (Intervjuer 2)</h3>
+              <h3 style={{color: '#8b5cf6', display: 'flex', justifyContent: 'space-between'}}>
+                <span>Dušan</span>
+                {dusanData && <span className="badge" style={{background: '#8b5cf6', color: 'white'}}>{dScore}% Score</span>}
+              </h3>
               {dusanData ? (
                 <>
                   <div className="admin-note-box">

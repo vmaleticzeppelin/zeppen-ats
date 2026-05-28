@@ -113,7 +113,32 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
     }
     if (currentUser === 'Branislav' || currentUser === 'Dusan' || currentUser === 'Admin') {
       await saveEvaluation(String(candidateId), currentUser, { scores, notes, redFlags, recommendation });
-      const currentTotalScore = Math.round(radarData.reduce((acc, curr) => acc + curr.A, 0) / radarData.length) || 0;
+
+      // Izračunavanje zajedničkog proseka sa drugim intervjuerom (ako postoji)
+      const otherUser = currentUser === 'Branislav' ? 'Dusan' : (currentUser === 'Dusan' ? 'Branislav' : null);
+      const otherEval = otherUser ? getEvaluation(String(candidateId), otherUser) : null;
+
+      const calcCombinedAvg = (keys: string[]) => {
+        let sum = 0;
+        let count = 0;
+        keys.forEach(k => {
+          if (scores[k]) { sum += scores[k]; count++; }
+          if (otherEval?.scores && otherEval.scores[k]) { sum += otherEval.scores[k]; count++; }
+        });
+        return count === 0 ? 0 : Math.round((sum / count) * 20);
+      };
+
+      const combinedRadarData = [
+        { subject: 'Energija', A: calcCombinedAvg(['s1_energija', 's3_energija', 's4_energija', 's5_energija']) },
+        { subject: 'Komunikacija', A: calcCombinedAvg(['s1_komunikativnost', 's3_jasnoca', 's5_sigurnost', 's5_prirodnost', 's9_komunikacija']) },
+        { subject: 'Organizacija', A: calcCombinedAvg(['s6_organizacija', 's8_organizovanost', 's8_sistematicnost', 's9_organizacija']) },
+        { subject: 'Stabilnost', A: calcCombinedAvg(['s6_stabilnost', 's7_stabilnost', 's7_smirenost', 's9_stabilnost']) },
+        { subject: 'Prodaja & Ownership', A: calcCombinedAvg(['s5_prodajni', 's6_ownership', 's7_ownership', 's9_ownership']) },
+        { subject: 'Disciplina (CRM)', A: calcCombinedAvg(['s8_disciplina', 's8_crm', 's8_preciznost']) },
+      ];
+
+      const currentTotalScore = Math.round(combinedRadarData.reduce((acc, curr) => acc + curr.A, 0) / combinedRadarData.length) || 0;
+      
       await updateCandidate(candidateId, { score: currentTotalScore, status: 'Prvi krug završen' });
       alert('Procena uspešno sačuvana!');
       navigate('/candidates');
