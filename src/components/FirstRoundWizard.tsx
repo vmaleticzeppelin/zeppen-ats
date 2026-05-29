@@ -215,6 +215,14 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
                   <li>Odnos prema problemima i odgovornosti</li>
                 </ul>
               </div>
+
+              <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px dashed var(--color-text-muted)', textAlign: 'center' }}>
+                <h4 style={{ marginTop: 0, marginBottom: '0.5rem' }}>🖨️ Offline Ocenjivanje (Papir)</h4>
+                <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Ukoliko intervju ne možete da pratite i popunjavate na računaru, možete preuzeti i odštampati ovaj obrazac u PDF formatu, popuniti ga olovkom, pa kasnije uneti rezultate u aplikaciju.</p>
+                <button className="btn-secondary" onClick={() => window.open('/print/first-round', '_blank')} style={{ fontWeight: 'bold' }}>
+                  Preuzmi / Štampaj PDF Obrazac
+                </button>
+              </div>
             </div>
           </div>
         )}
