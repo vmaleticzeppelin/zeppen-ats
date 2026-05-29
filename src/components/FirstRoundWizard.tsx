@@ -535,6 +535,22 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
                   <option value="Za mesec dana">Za mesec dana</option>
                 </select>
               </div>
+              <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label>Engleski jezik (Nivo)</label>
+                <select value={notes.engleskiNivo || ''} onChange={e => handleNote('engleskiNivo', e.target.value)} className="text-input">
+                  <option value="">Izaberite nivo...</option>
+                  <option value="Osnovni">Osnovni</option>
+                  <option value="Srednji">Srednji</option>
+                  <option value="Napredni">Napredni</option>
+                  <option value="Tečno (Maternji)">Tečno (Maternji)</option>
+                </select>
+                <label style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>Opis nivoa korišćenja</label>
+                <textarea rows={2} placeholder="Npr. koristi ga svakodnevno za mailove..." className="text-input" value={notes.engleskiOpis || ''} onChange={e => handleNote('engleskiOpis', e.target.value)}></textarea>
+              </div>
+              <div className="form-group" style={{ display: 'flex', flexDirection: 'column' }}>
+                <label>Rad na računaru (Šta sve zna)</label>
+                <textarea placeholder="Npr. Excel napredno, Pantheon, Canva..." className="text-input" value={notes.racunarZnanje || ''} onChange={e => handleNote('racunarZnanje', e.target.value)} style={{ flexGrow: 1, minHeight: '100px' }}></textarea>
+              </div>
             </div>
 
             <div className="final-grid">

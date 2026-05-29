@@ -267,6 +267,12 @@ const PrintableFirstRound: React.FC = () => {
           <div className="info-line" style={{ marginBottom: '10px' }}>
             <span>Dostupnost za početak rada:</span> <div className="line-blank"></div>
           </div>
+          <div className="info-line" style={{ marginBottom: '10px' }}>
+            <span>Engleski jezik (nivo i opis korišćenja):</span> <div className="line-blank"></div>
+          </div>
+          <div className="info-line" style={{ marginBottom: '10px' }}>
+            <span>Rad na računaru (šta sve zna):</span> <div className="line-blank"></div>
+          </div>
         </div>
 
         <div className="notes-box">
