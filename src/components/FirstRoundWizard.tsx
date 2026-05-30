@@ -73,21 +73,21 @@ const FirstRoundWizard: React.FC<FirstRoundWizardProps> = ({ candidateId }) => {
     switch (currentStep) {
       case 1:
         if (arrivedOnTime === null) return false;
-        return reqScores(['s1_energija', 's1_kontakt', 's1_sigurnost', 's1_prof', 's1_komunikativnost', 's1_vizuelni']);
+        return reqScores(['s1_energija', 's1_kontakt', 's1_sigurnost', 's1_prof', 's1_komunikativnost', 's1_vizuelni']) && reqNotes(['s1']);
       case 3:
-        return reqScores(['s3_jasnoca', 's3_struktura', 's3_energija', 's3_sigurnost', 's3_fokus', 's3_prof']);
+        return reqScores(['s3_jasnoca', 's3_struktura', 's3_energija', 's3_sigurnost', 's3_fokus', 's3_prof']) && reqNotes(['s3']);
       case 4:
-        return reqScores(['s4_motivacija', 's4_priprema', 's4_ozbiljnost', 's4_energija', 's4_interes']);
+        return reqScores(['s4_motivacija', 's4_priprema', 's4_ozbiljnost', 's4_energija', 's4_interes']) && reqNotes(['s4']);
       case 5:
-        return reqScores(['s5_sigurnost', 's5_telefon', 's5_prodajni', 's5_energija', 's5_prirodnost']);
+        return reqScores(['s5_sigurnost', 's5_telefon', 's5_prodajni', 's5_energija', 's5_prirodnost']) && reqNotes(['s5']);
       case 6:
-        return reqScores(['s6_organizacija', 's6_logika', 's6_prioriteti', 's6_stabilnost', 's6_ownership']);
+        return reqScores(['s6_organizacija', 's6_logika', 's6_prioriteti', 's6_stabilnost', 's6_ownership']) && reqNotes(['s6']);
       case 7:
-        return reqScores(['s7_stabilnost', 's7_prof', 's7_ownership', 's7_smirenost', 's7_otpornost']);
+        return reqScores(['s7_stabilnost', 's7_prof', 's7_ownership', 's7_smirenost', 's7_otpornost']) && reqNotes(['s7']);
       case 8:
-        return reqScores(['s8_organizovanost', 's8_disciplina', 's8_crm', 's8_sistematicnost', 's8_preciznost']);
+        return reqScores(['s8_organizovanost', 's8_disciplina', 's8_crm', 's8_sistematicnost', 's8_preciznost']) && reqNotes(['s8']);
       case 9:
-        return reqScores(['s9_organizacija', 's9_ownership', 's9_logika', 's9_stabilnost', 's9_resavanje', 's9_komunikacija']);
+        return reqScores(['s9_organizacija', 's9_ownership', 's9_logika', 's9_stabilnost', 's9_resavanje', 's9_komunikacija']) && reqNotes(['s9']);
       case 10:
         if (!recommendation) return false;
         if (!reqNotes(['iskustvo', 'ocekivanaPlata', 'dostupnost'])) return false;
