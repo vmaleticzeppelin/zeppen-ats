@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
     }));
 
     const top = [...candidates]
-      .filter(c => c.score !== null)
+      .filter(c => c.score !== null && c.status === 'Drugi krug')
       .sort((a, b) => (b.score || 0) - (a.score || 0))
       .slice(0, 5);
 
@@ -208,8 +208,8 @@ const Dashboard: React.FC = () => {
 
           <div className="card list-card">
             <div className="card-header">
-              <h3>Top Kandidati</h3>
-              <button className="btn-text">Vidi sve</button>
+              <h3>Top Kandidati u Drugom Krugu</h3>
+              <button className="btn-text" onClick={() => navigate('/candidates')}>Vidi sve</button>
             </div>
             <div className="candidate-list">
               {stats.top.length > 0 ? stats.top.map(c => (
@@ -224,7 +224,7 @@ const Dashboard: React.FC = () => {
                 </div>
               )) : (
                 <div style={{ color: '#A0A5B1', padding: '1rem', textAlign: 'center' }}>
-                  Nema neocenjenih kandidata
+                  Trenutno nema kandidata u drugom krugu.
                 </div>
               )}
             </div>
