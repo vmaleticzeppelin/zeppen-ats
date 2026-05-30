@@ -17,6 +17,9 @@ interface CandidateEvaluations {
     Branislav?: EvaluationData;
     Dusan?: EvaluationData;
     Admin?: EvaluationData;
+    Branislav_r2?: EvaluationData;
+    Dusan_r2?: EvaluationData;
+    Admin_r2?: EvaluationData;
   };
 }
 
@@ -24,8 +27,8 @@ export type EvaluatorRole = 'Branislav' | 'Dusan' | 'Admin';
 
 interface EvalContextType {
   evaluations: CandidateEvaluations;
-  saveEvaluation: (candidateId: string, evaluator: EvaluatorRole, data: EvaluationData) => Promise<void>;
-  getEvaluation: (candidateId: string, evaluator: EvaluatorRole) => EvaluationData | undefined;
+  saveEvaluation: (candidateId: string, evaluator: EvaluatorRole, data: EvaluationData, round?: number) => Promise<void>;
+  getEvaluation: (candidateId: string, evaluator: EvaluatorRole, round?: number) => EvaluationData | undefined;
 }
 
 const EvalContext = createContext<EvalContextType | undefined>(undefined);
@@ -44,15 +47,17 @@ export const EvalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => unsub();
   }, []);
 
-  const saveEvaluation = async (candidateId: string, evaluator: EvaluatorRole, data: EvaluationData) => {
+  const saveEvaluation = async (candidateId: string, evaluator: EvaluatorRole, data: EvaluationData, round: number = 1) => {
     // Merge true allows us to just update Branislav's data without overwriting Dusan's
+    const key = round === 1 ? evaluator : `${evaluator}_r2`;
     await setDoc(doc(db, 'evaluations', String(candidateId)), {
-      [evaluator]: data
+      [key]: data
     }, { merge: true });
   };
 
-  const getEvaluation = (candidateId: string, evaluator: EvaluatorRole) => {
-    return evaluations[candidateId]?.[evaluator];
+  const getEvaluation = (candidateId: string, evaluator: EvaluatorRole, round: number = 1) => {
+    const key = round === 1 ? evaluator : `${evaluator}_r2`;
+    return (evaluations[candidateId] as any)?.[key];
   };
 
   return (

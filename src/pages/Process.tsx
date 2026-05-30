@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { UserCheck, Briefcase, FileText, User, ArrowLeft } from 'lucide-react';
 import FirstRoundWizard from '../components/FirstRoundWizard';
+import SecondRoundWizard from '../components/SecondRoundWizard';
 import { useCandidates } from '../context/CandidateContext';
 import { useAuth } from '../context/AuthContext';
 import { useEvaluations } from '../context/EvaluationContext';
 import AdminFirstRoundView from '../components/AdminFirstRoundView';
+import AdminSecondRoundView from '../components/AdminSecondRoundView';
 import './Process.css';
 
 const Process: React.FC = () => {
@@ -61,6 +63,11 @@ const Process: React.FC = () => {
             <button className={`tab-btn ${activeTab === 'drugi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('drugi-krug')}>
               2. Drugi krug (Napredno)
             </button>
+            {currentUser === 'Admin' && (
+              <button className={`tab-btn ${activeTab === 'admin-pregled-2' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled-2')}>
+                [ADMIN] Uporedni prikaz - 2. Krug
+              </button>
+            )}
             <button className={`tab-btn ${activeTab === 'treci-krug' ? 'active' : ''}`} onClick={() => setActiveTab('treci-krug')}>
               3. Probni rad (3-5 dana)
             </button>
@@ -137,11 +144,11 @@ const Process: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'drugi-krug' && (
-          <div className="evaluation-form empty-tab">
-            <UserCheck size={48} className="empty-icon" />
-            <h3>Drugi krug - U pripremi</h3>
-            <p>Sadržaj drugog kruga.</p>
+        {activeTab === 'drugi-krug' && <SecondRoundWizard candidateId={candidate.id} />}
+
+        {activeTab === 'admin-pregled-2' && currentUser === 'Admin' && (
+          <div className="card" style={{padding: '2rem'}}>
+            <AdminSecondRoundViewWrapper candidateId={candidate.id} />
           </div>
         )}
 
@@ -164,6 +171,14 @@ const AdminFirstRoundViewWrapper = ({ candidateId }: { candidateId: string | num
   const branislav = getEvaluation(String(candidateId), 'Branislav');
   const dusan = getEvaluation(String(candidateId), 'Dusan');
   return <AdminFirstRoundView candidateId={candidateId} branislavData={branislav} dusanData={dusan} />;
+};
+
+const AdminSecondRoundViewWrapper = ({ candidateId }: { candidateId: string | number }) => {
+  const { getEvaluation } = useEvaluations();
+  
+  const branislav = getEvaluation(String(candidateId), 'Branislav', 2);
+  const dusan = getEvaluation(String(candidateId), 'Dusan', 2);
+  return <AdminSecondRoundView candidateId={candidateId} branislavData={branislav} dusanData={dusan} />;
 };
 
 export default Process;

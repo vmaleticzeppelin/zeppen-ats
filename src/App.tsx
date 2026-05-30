@@ -9,6 +9,8 @@ import Process from './pages/Process';
 import Login from './pages/Login';
 import PrintableFirstRound from './pages/PrintableFirstRound';
 import PrintableCandidateReport from './pages/PrintableCandidateReport';
+import PrintableSecondRound from './pages/PrintableSecondRound';
+import PrintableSecondRoundReport from './pages/PrintableSecondRoundReport';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { EvalProvider } from './context/EvaluationContext';
 import { CandidateProvider } from './context/CandidateContext';
@@ -42,6 +44,18 @@ const App: React.FC = () => {
               <Route path="/print/report/:id" element={
                 <ProtectedRoute>
                   <PrintableCandidateReport />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/print/second-round" element={
+                <ProtectedRoute>
+                  <PrintableSecondRound />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/print/report-r2/:id" element={
+                <ProtectedRoute>
+                  <PrintableSecondRoundReport />
                 </ProtectedRoute>
               } />
               
