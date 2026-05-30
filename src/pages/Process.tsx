@@ -163,8 +163,7 @@ const AdminFirstRoundViewWrapper = ({ candidateId }: { candidateId: string | num
   
   const branislav = getEvaluation(String(candidateId), 'Branislav');
   const dusan = getEvaluation(String(candidateId), 'Dusan');
-  
-  return <AdminFirstRoundView branislavData={branislav} dusanData={dusan} />;
+  return <AdminFirstRoundView candidateId={candidateId} branislavData={branislav} dusanData={dusan} />;
 };
 
 export default Process;

@@ -4,11 +4,12 @@ import type { EvaluationData } from '../context/EvaluationContext';
 import './FirstRoundWizard.css';
 
 interface AdminViewProps {
+  candidateId: string | number;
   branislavData?: EvaluationData;
   dusanData?: EvaluationData;
 }
 
-const AdminFirstRoundView: React.FC<AdminViewProps> = ({ branislavData, dusanData }) => {
+const AdminFirstRoundView: React.FC<AdminViewProps> = ({ candidateId, branislavData, dusanData }) => {
   const calcAvg = (keys: string[]) => {
     let sum = 0;
     let count = 0;
@@ -62,7 +63,12 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ branislavData, dusanDat
 
   return (
     <div className="admin-view-container card">
-      <h2>Pregled ocena - Prvi krug</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <h2 style={{ margin: 0 }}>Pregled ocena - Prvi krug</h2>
+        <button className="btn-secondary" onClick={() => window.open(`/print/report/${candidateId}`, '_blank')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
+          🖨️ Preuzmi PDF izveštaj
+        </button>
+      </div>
       
       <div className="final-grid">
         <div className="admin-notes">
