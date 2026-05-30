@@ -20,6 +20,7 @@
   
   .print-report-container, .print-report-container * {
     visibility: visible;
+    color: #000 !important;
   }
   
   .print-report-container {
@@ -29,7 +30,7 @@
     width: 100%;
     margin: 0;
     padding: 0;
-    background: transparent;
+    background: #fff !important;
   }
 
   .page-break {
@@ -70,6 +71,7 @@
   border: 1px solid #ccc;
   padding: 15px;
   border-radius: 4px;
+  background: #fff !important;
 }
 
 .evaluator-column h3 {
@@ -77,14 +79,15 @@
   border-bottom: 1px solid #eee;
   padding-bottom: 8px;
   font-size: 16px;
-  color: #333;
+  color: #000 !important;
 }
 
 .evaluator-column h4 {
   font-size: 14px;
   margin-top: 15px;
   margin-bottom: 5px;
-  background: #f5f5f5;
+  background: #eee !important;
+  color: #000 !important;
   padding: 4px 8px;
 }
 
@@ -106,12 +109,13 @@
 }
 
 .section-title {
-  background: #333;
-  color: #fff;
+  background: #ddd !important;
+  color: #000 !important;
   padding: 5px 10px;
   font-size: 14px;
   margin-top: 20px;
   margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .info-grid {
