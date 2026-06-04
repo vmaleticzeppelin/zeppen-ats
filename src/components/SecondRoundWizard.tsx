@@ -171,13 +171,15 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
   };
 
   const renderStars = (key: string, label: string) => (
-    <div className="score-item">
-      <label>{label}</label>
-      <div className="star-rating">
+    <div className="rating-row-wiz">
+      <div className="rating-label">
+        <span>{label}</span>
+      </div>
+      <div className="rating-stars">
         {[1, 2, 3, 4, 5].map(num => (
           <button
             key={num}
-            className={`star-btn ${scores[key] === num ? 'selected' : ''}`}
+            className={`star-btn ${scores[key] === num ? 'active' : ''}`}
             onClick={() => handleScore(key, num)}
           >
             {num}
@@ -217,7 +219,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
               <h4>PITANJE:</h4>
               <p><em>"Prošlo je nekoliko dana od našeg prvog razgovora. Kako vam danas izgleda naša priča i šta vam je najviše ostalo u sećanju iz razgovora o firmi i poziciji?"</em></p>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s1_zainteresovanost', 'Zainteresovanost')}
               {renderStars('r2_s1_energija', 'Energija')}
               {renderStars('r2_s1_pripremljenost', 'Pripremljenost')}
@@ -246,7 +248,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
               </ul>
               <p className="text-danger mt-2"><strong>Crvene zastavice:</strong> "Nikada nisam pogrešio", Krivica je kod drugih, Izbegava odgovor, Nema pouku.</p>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s2_ownership', 'Ownership')}
               {renderStars('r2_s2_odgovornost', 'Odgovornost')}
               {renderStars('r2_s2_iskrenost', 'Iskrenost')}
@@ -272,7 +274,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
               <p><strong>Dodatna info za kandidata:</strong> Štampar ne odgovara. Postoji ozbiljan rizik da roba zakasni.</p>
               <p className="text-danger mt-2"><strong>Crvene zastavice:</strong> Kriv je štampar, Prazna obećanja, Nema plan B, Paniči.</p>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s3_ownership', 'Ownership')}
               {renderStars('r2_s3_komunikacija', 'Komunikacija')}
               {renderStars('r2_s3_empatija', 'Empatija')}
@@ -298,7 +300,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
               <p><strong>Intervjuer glumi sekretaricu:</strong> Direktor nije tu / Pošaljite na info@ / Imamo dobavljača / Nismo zainteresovani.</p>
               <p><strong>Cilj kandidata:</strong> Pokušaj da dođe do osobe koja donosi odluku.</p>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s4_upornost', 'Upornost')}
               {renderStars('r2_s4_energija', 'Energija')}
               {renderStars('r2_s4_komunikacija', 'Komunikacija')}
@@ -323,7 +325,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
               <p><strong>Intervjuer glumi direktora:</strong> <em>"Čuo sam za vas, ali već tri godine radimo sa postojećim dobavljačem i nemamo razlog da menjamo saradnju."</em></p>
               <p className="text-danger mt-2"><strong>Crvene zastavice:</strong> Odmah nudi popust, Priča više nego što sluša, Ne istražuje potrebe.</p>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s5_prodajni', 'Prodajni potencijal')}
               {renderStars('r2_s5_slusanje', 'Aktivno slušanje')}
               {renderStars('r2_s5_pitanja', 'Postavljanje pitanja')}
@@ -348,7 +350,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
               <p><strong>Scenario (08:00 ujutru):</strong> 2 hitne ponude, vozač čeka robu, direktor traži izveštaj, problem sa dobavljačem, klijent čeka odgovor, 3 nova upita.</p>
               <p><strong>Zadatak:</strong> "Napišite šta radite narednih 30 minuta i objasnite zašto."</p>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s6_organizacija', 'Organizacija')}
               {renderStars('r2_s6_logika', 'Logika')}
               {renderStars('r2_s6_prioritizacija', 'Prioritizacija')}
@@ -373,7 +375,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
               <p>Dati katalog kandidatu. <strong>Klijent:</strong> 120 zaposlenih, Budžet 25 EUR/osobi, Novogodišnji pokloni.</p>
               <p><strong>Zadatak:</strong> Za 15 minuta napraviti predlog i prezentovati ga.</p>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s7_logika', 'Poslovna logika')}
               {renderStars('r2_s7_kreativnost', 'Kreativnost')}
               {renderStars('r2_s7_potrebe', 'Fokus na potrebe klijenta')}
@@ -402,7 +404,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
                 <li>Kako gledate na sistem bonusa i nagrađivanja?</li>
               </ul>
             </div>
-            <div className="scores-grid">
+            <div className="ratings-grid">
               {renderStars('r2_s8_motivacija', 'Motivacija')}
               {renderStars('r2_s8_ambicija', 'Ambicija')}
               {renderStars('r2_s8_proaktivnost', 'Proaktivnost')}
