@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import type { EvaluationData } from '../context/EvaluationContext';
 import './AdminFirstRoundView.css'; // Reusing styles
@@ -10,8 +10,6 @@ interface AdminSecondRoundViewProps {
 }
 
 const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId, branislavData, dusanData }) => {
-  const [showPrintModal, setShowPrintModal] = useState(false);
-
   const calculateRadarData = (scores?: Record<string, number>) => {
     if (!scores) return [];
     
@@ -25,13 +23,25 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
     };
 
     return [
-      { subject: 'Organizacija', value: getAvg(['r2_s3_organizacija', 'r2_s3_prioritizacija', 'r2_final_org']) },
-      { subject: 'Prodaja', value: getAvg(['r2_s2_prodaja', 'r2_s2_zakljucivanje', 'r2_final_prodaja', 'r2_s5_pregovaranje']) },
-      { subject: 'Ownership', value: getAvg(['r2_s1_ownership', 'r2_s3_ownership', 'r2_final_ownership', 'r2_s1_odgovornost']) },
-      { subject: 'Komunikacija', value: getAvg(['r2_s2_vodjenje', 'r2_s5_komunikacija', 'r2_final_kom', 'r2_s6_prezentacija']) },
-      { subject: 'Stabilnost', value: getAvg(['r2_s3_stabilnost', 'r2_s5_stabilnost', 'r2_s5_konflikt', 'r2_final_stab']) },
-      { subject: 'Kultura', value: getAvg(['r2_s1_zrelost', 'r2_s6_kreativnost', 'r2_final_kultura']) },
+      { subject: 'Ownership (25%)', value: getAvg(['r2_s2_ownership', 'r2_s2_odgovornost', 'r2_s3_ownership', 'r2_s6_ownership']) },
+      { subject: 'Organizacija (20%)', value: getAvg(['r2_s6_organizacija', 'r2_s6_prioritizacija', 'r2_s6_logika']) },
+      { subject: 'Prodaja (20%)', value: getAvg(['r2_s5_prodajni', 'r2_s5_vodjenje', 'r2_s5_zakljucivanje', 'r2_s4_upornost']) },
+      { subject: 'Stabilnost (15%)', value: getAvg(['r2_s3_stabilnost', 'r2_s6_stabilnost']) },
+      { subject: 'Komunikacija (10%)', value: getAvg(['r2_s3_komunikacija', 'r2_s4_komunikacija']) },
+      { subject: 'Kreativnost (5%)', value: getAvg(['r2_s7_kreativnost']) },
+      { subject: 'Kultura (5%)', value: getAvg(['r2_s1_kompatibilnost', 'r2_s8_ambicija']) },
     ];
+  };
+
+  const calculateWeightedTotal = (radar: { subject: string; value: number }[]) => {
+    if (!radar || radar.length === 0) return 0;
+    // Težine po redu gore: 25, 20, 20, 15, 10, 5, 5
+    const weights = [0.25, 0.20, 0.20, 0.15, 0.10, 0.05, 0.05];
+    let total = 0;
+    radar.forEach((r, i) => {
+      total += r.value * weights[i];
+    });
+    return Math.round(total);
   };
 
   const bRadar = calculateRadarData(branislavData?.scores);
@@ -49,30 +59,37 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
 
   if (combinedRadarData.length === 0) {
     combinedRadarData.push(
-      { subject: 'Organizacija', Branislav: 0, Dusan: 0, fullMark: 100 },
-      { subject: 'Prodaja', Branislav: 0, Dusan: 0, fullMark: 100 },
-      { subject: 'Ownership', Branislav: 0, Dusan: 0, fullMark: 100 },
-      { subject: 'Komunikacija', Branislav: 0, Dusan: 0, fullMark: 100 },
-      { subject: 'Stabilnost', Branislav: 0, Dusan: 0, fullMark: 100 },
-      { subject: 'Kultura', Branislav: 0, Dusan: 0, fullMark: 100 }
+      { subject: 'Ownership (25%)', Branislav: 0, Dusan: 0, fullMark: 100 },
+      { subject: 'Organizacija (20%)', Branislav: 0, Dusan: 0, fullMark: 100 },
+      { subject: 'Prodaja (20%)', Branislav: 0, Dusan: 0, fullMark: 100 },
+      { subject: 'Stabilnost (15%)', Branislav: 0, Dusan: 0, fullMark: 100 },
+      { subject: 'Komunikacija (10%)', Branislav: 0, Dusan: 0, fullMark: 100 },
+      { subject: 'Kreativnost (5%)', Branislav: 0, Dusan: 0, fullMark: 100 },
+      { subject: 'Kultura (5%)', Branislav: 0, Dusan: 0, fullMark: 100 }
     );
   }
+
+  const totalScoreB = calculateWeightedTotal(bRadar);
+  const totalScoreD = calculateWeightedTotal(dRadar);
+  const avgTotalScore = (branislavData && dusanData) ? Math.round((totalScoreB + totalScoreD) / 2) : (totalScoreB || totalScoreD);
 
   const renderText = (text: string | null | undefined) => {
     if (!text) return <span className="text-muted">Nema unosa</span>;
     return text;
   };
 
-  const totalScoreB = bRadar.length > 0 ? Math.round(bRadar.reduce((acc, curr) => acc + curr.value, 0) / bRadar.length) : 0;
-  const totalScoreD = dRadar.length > 0 ? Math.round(dRadar.reduce((acc, curr) => acc + curr.value, 0) / dRadar.length) : 0;
-  const avgTotalScore = (branislavData && dusanData) ? Math.round((totalScoreB + totalScoreD) / 2) : (totalScoreB || totalScoreD);
+  const renderYesNo = (val: string | undefined) => {
+    if (val === 'DA') return <span className="badge" style={{background: '#10b981', color: 'white'}}>DA</span>;
+    if (val === 'NE') return <span className="badge" style={{background: '#ef4444', color: 'white'}}>NE</span>;
+    return <span className="badge badge-secondary">Nije odgovoreno</span>;
+  };
 
   return (
     <div className="admin-view-container">
       <div className="admin-header">
         <div>
           <h2 style={{margin: 0, color: 'var(--color-primary)'}}>Uporedni prikaz ocena - Drugi Krug</h2>
-          <p className="text-muted" style={{marginTop: '0.25rem'}}>Analiza nezavisnih procena</p>
+          <p className="text-muted" style={{marginTop: '0.25rem'}}>Analiza nezavisnih procena (Težinski ponderisano)</p>
         </div>
         <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
           <div className="total-score-badge">
@@ -108,8 +125,13 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
           </div>
           
           <div className="split-content">
+            <div className="comparison-section" style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', borderLeft: '4px solid #3b82f6' }}>
+              <p style={{marginBottom: '0.5rem'}}><strong>Poveriti najvećeg klijenta?</strong> {renderYesNo(branislavData?.notes?.r2_final_najveci_klijent)}</p>
+              <p><strong>Zaposliti danas?</strong> {renderYesNo(branislavData?.notes?.r2_final_zaposlio_danas)}</p>
+            </div>
+
             <div className="comparison-section">
-              <h4>Preporuka</h4>
+              <h4>Konačna Preporuka</h4>
               <p style={{fontWeight: 'bold', fontSize: '1.1rem'}}>{renderText(branislavData?.recommendation)}</p>
             </div>
 
@@ -122,13 +144,23 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
               <h4>Najveći rizici</h4>
               <p>{renderText(branislavData?.notes?.r2_final_rizici)}</p>
             </div>
-            
-            <div className="comparison-section danger-section">
-              <h4>Crvene zastavice</h4>
-              <p>{renderText(branislavData?.redFlags?.r2_final_zastavice)}</p>
+
+            <div className="comparison-section">
+              <h4>Potencijal za razvoj</h4>
+              <p>{renderText(branislavData?.notes?.r2_final_potencijal)}</p>
             </div>
 
             <div className="comparison-section">
+              <h4>Uklapanje u kulturu</h4>
+              <p>{renderText(branislavData?.notes?.r2_final_kultura)}</p>
+            </div>
+            
+            <div className="comparison-section danger-section">
+              <h4>Konačne crvene zastavice</h4>
+              <p>{renderText(branislavData?.redFlags?.r2_final_zastavice)}</p>
+            </div>
+
+            <div className="comparison-section" style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '8px' }}>
               <h4>AI Analiza</h4>
               <p style={{whiteSpace: 'pre-line'}}>{renderText(branislavData?.notes?.ai_analiza)}</p>
             </div>
@@ -136,12 +168,14 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
             <div className="comparison-section">
               <h4>Zapažanja po koracima</h4>
               <ul>
-                <li><strong>S1 (Iskustvo):</strong> {renderText(branislavData?.notes?.r2_s1)}</li>
-                <li><strong>S2 (Prodaja):</strong> {renderText(branislavData?.notes?.r2_s2)}</li>
-                <li><strong>S3 (Organizacija):</strong> {renderText(branislavData?.notes?.r2_s3)}</li>
-                <li><strong>S4 (Email):</strong> {renderText(branislavData?.notes?.r2_s4)}</li>
-                <li><strong>S5 (Težak klijent):</strong> {renderText(branislavData?.notes?.r2_s5)}</li>
-                <li><strong>S6 (Projekat):</strong> {renderText(branislavData?.notes?.r2_s6)}</li>
+                <li><strong>S1 (Rekonekcija):</strong> {renderText(branislavData?.notes?.r2_s1)}</li>
+                <li><strong>S2 (Ownership test):</strong> {renderText(branislavData?.notes?.r2_s2)}</li>
+                <li><strong>S3 (Štampar):</strong> {renderText(branislavData?.notes?.r2_s3)}</li>
+                <li><strong>S4 (Sekretarica):</strong> {renderText(branislavData?.notes?.r2_s4)}</li>
+                <li><strong>S5 (Direktor mktg):</strong> {renderText(branislavData?.notes?.r2_s5)}</li>
+                <li><strong>S6 (Prioritizacija):</strong> {renderText(branislavData?.notes?.r2_s6)}</li>
+                <li><strong>S7 (Poklon projekat):</strong> {renderText(branislavData?.notes?.r2_s7)}</li>
+                <li><strong>S8 (Motivacija):</strong> {renderText(branislavData?.notes?.r2_s8)}</li>
               </ul>
             </div>
           </div>
@@ -153,8 +187,13 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
           </div>
           
           <div className="split-content">
+            <div className="comparison-section" style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', borderLeft: '4px solid #10b981' }}>
+              <p style={{marginBottom: '0.5rem'}}><strong>Poveriti najvećeg klijenta?</strong> {renderYesNo(dusanData?.notes?.r2_final_najveci_klijent)}</p>
+              <p><strong>Zaposliti danas?</strong> {renderYesNo(dusanData?.notes?.r2_final_zaposlio_danas)}</p>
+            </div>
+
             <div className="comparison-section">
-              <h4>Preporuka</h4>
+              <h4>Konačna Preporuka</h4>
               <p style={{fontWeight: 'bold', fontSize: '1.1rem'}}>{renderText(dusanData?.recommendation)}</p>
             </div>
 
@@ -167,13 +206,23 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
               <h4>Najveći rizici</h4>
               <p>{renderText(dusanData?.notes?.r2_final_rizici)}</p>
             </div>
-            
-            <div className="comparison-section danger-section">
-              <h4>Crvene zastavice</h4>
-              <p>{renderText(dusanData?.redFlags?.r2_final_zastavice)}</p>
+
+            <div className="comparison-section">
+              <h4>Potencijal za razvoj</h4>
+              <p>{renderText(dusanData?.notes?.r2_final_potencijal)}</p>
             </div>
 
             <div className="comparison-section">
+              <h4>Uklapanje u kulturu</h4>
+              <p>{renderText(dusanData?.notes?.r2_final_kultura)}</p>
+            </div>
+            
+            <div className="comparison-section danger-section">
+              <h4>Konačne crvene zastavice</h4>
+              <p>{renderText(dusanData?.redFlags?.r2_final_zastavice)}</p>
+            </div>
+
+            <div className="comparison-section" style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '8px' }}>
               <h4>AI Analiza</h4>
               <p style={{whiteSpace: 'pre-line'}}>{renderText(dusanData?.notes?.ai_analiza)}</p>
             </div>
@@ -181,12 +230,14 @@ const AdminSecondRoundView: React.FC<AdminSecondRoundViewProps> = ({ candidateId
             <div className="comparison-section">
               <h4>Zapažanja po koracima</h4>
               <ul>
-                <li><strong>S1 (Iskustvo):</strong> {renderText(dusanData?.notes?.r2_s1)}</li>
-                <li><strong>S2 (Prodaja):</strong> {renderText(dusanData?.notes?.r2_s2)}</li>
-                <li><strong>S3 (Organizacija):</strong> {renderText(dusanData?.notes?.r2_s3)}</li>
-                <li><strong>S4 (Email):</strong> {renderText(dusanData?.notes?.r2_s4)}</li>
-                <li><strong>S5 (Težak klijent):</strong> {renderText(dusanData?.notes?.r2_s5)}</li>
-                <li><strong>S6 (Projekat):</strong> {renderText(dusanData?.notes?.r2_s6)}</li>
+                <li><strong>S1 (Rekonekcija):</strong> {renderText(dusanData?.notes?.r2_s1)}</li>
+                <li><strong>S2 (Ownership test):</strong> {renderText(dusanData?.notes?.r2_s2)}</li>
+                <li><strong>S3 (Štampar):</strong> {renderText(dusanData?.notes?.r2_s3)}</li>
+                <li><strong>S4 (Sekretarica):</strong> {renderText(dusanData?.notes?.r2_s4)}</li>
+                <li><strong>S5 (Direktor mktg):</strong> {renderText(dusanData?.notes?.r2_s5)}</li>
+                <li><strong>S6 (Prioritizacija):</strong> {renderText(dusanData?.notes?.r2_s6)}</li>
+                <li><strong>S7 (Poklon projekat):</strong> {renderText(dusanData?.notes?.r2_s7)}</li>
+                <li><strong>S8 (Motivacija):</strong> {renderText(dusanData?.notes?.r2_s8)}</li>
               </ul>
             </div>
           </div>

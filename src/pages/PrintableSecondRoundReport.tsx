@@ -39,106 +39,133 @@ const PrintableSecondRoundReport: React.FC = () => {
       return count === 0 ? 0 : Math.round((sum / count) * 20); 
     };
     return [
-      { subject: 'Organizacija', value: getAvg(['r2_s3_organizacija', 'r2_s3_prioritizacija', 'r2_final_org']) },
-      { subject: 'Prodaja', value: getAvg(['r2_s2_prodaja', 'r2_s2_zakljucivanje', 'r2_final_prodaja', 'r2_s5_pregovaranje']) },
-      { subject: 'Ownership', value: getAvg(['r2_s1_ownership', 'r2_s3_ownership', 'r2_final_ownership', 'r2_s1_odgovornost']) },
-      { subject: 'Komunikacija', value: getAvg(['r2_s2_vodjenje', 'r2_s5_komunikacija', 'r2_final_kom', 'r2_s6_prezentacija']) },
-      { subject: 'Stabilnost', value: getAvg(['r2_s3_stabilnost', 'r2_s5_stabilnost', 'r2_s5_konflikt', 'r2_final_stab']) },
-      { subject: 'Kultura', value: getAvg(['r2_s1_zrelost', 'r2_s6_kreativnost', 'r2_final_kultura']) },
+      { subject: 'Ownership', value: getAvg(['r2_s2_ownership', 'r2_s2_odgovornost', 'r2_s3_ownership', 'r2_s6_ownership']) },
+      { subject: 'Organizacija', value: getAvg(['r2_s6_organizacija', 'r2_s6_prioritizacija', 'r2_s6_logika']) },
+      { subject: 'Prodaja', value: getAvg(['r2_s5_prodajni', 'r2_s5_vodjenje', 'r2_s5_zakljucivanje', 'r2_s4_upornost']) },
+      { subject: 'Stabilnost', value: getAvg(['r2_s3_stabilnost', 'r2_s6_stabilnost']) },
+      { subject: 'Komunikacija', value: getAvg(['r2_s3_komunikacija', 'r2_s4_komunikacija']) },
+      { subject: 'Kreativnost', value: getAvg(['r2_s7_kreativnost']) },
+      { subject: 'Kultura', value: getAvg(['r2_s1_kompatibilnost', 'r2_s8_ambicija']) },
     ];
+  };
+
+  const calculateWeightedTotal = (radar: { subject: string; value: number }[]) => {
+    if (!radar || radar.length === 0) return 0;
+    const weights = [0.25, 0.20, 0.20, 0.15, 0.10, 0.05, 0.05];
+    let total = 0;
+    radar.forEach((r, i) => {
+      total += r.value * weights[i];
+    });
+    return Math.round(total);
   };
 
   const bRadar = calculateRadarData(branislav?.scores);
   const dRadar = calculateRadarData(dusan?.scores);
-  const totalScoreB = bRadar.length > 0 ? Math.round(bRadar.reduce((acc, curr) => acc + curr.value, 0) / bRadar.length) : 0;
-  const totalScoreD = dRadar.length > 0 ? Math.round(dRadar.reduce((acc, curr) => acc + curr.value, 0) / dRadar.length) : 0;
+  const totalScoreB = calculateWeightedTotal(bRadar);
+  const totalScoreD = calculateWeightedTotal(dRadar);
   const avgTotalScore = (branislav && dusan) ? Math.round((totalScoreB + totalScoreD) / 2) : (totalScoreB || totalScoreD);
 
   return (
-    <div className="printable-report-container">
+    <div className="print-report-container">
       <div className="report-header">
         <h1>UPOREDNI IZVEŠTAJ DRUGOG KRUGA (Praktična procena)</h1>
-        <div className="candidate-info-grid">
-          <div><strong>Kandidat:</strong> {candidate.name}</div>
-          <div><strong>Email:</strong> {candidate.email}</div>
-          <div><strong>Telefon:</strong> {candidate.phone}</div>
-          <div><strong>Kombinovani Score:</strong> {avgTotalScore}%</div>
+        <div className="info-grid">
+          <div className="info-item"><strong>Kandidat:</strong> {candidate.name}</div>
+          <div className="info-item"><strong>Email:</strong> {candidate.email}</div>
+          <div className="info-item"><strong>Telefon:</strong> {candidate.phone}</div>
+          <div className="info-item"><strong>Kombinovani Score:</strong> {avgTotalScore}%</div>
         </div>
       </div>
 
-      <div className="summary-section">
-        <div className="summary-col">
-          <h3 style={{ borderBottom: '2px solid #333' }}>Branislav ({totalScoreB}%)</h3>
-          <p><strong>Preporuka:</strong> {renderText(branislav?.recommendation)}</p>
-          <p><strong>Prednosti:</strong> {renderText(branislav?.notes?.r2_final_prednosti)}</p>
-          <p><strong>Rizici:</strong> {renderText(branislav?.notes?.r2_final_rizici)}</p>
-          <p><strong>Crvene zastavice:</strong> {renderText(branislav?.redFlags?.r2_final_zastavice)}</p>
-          <p><strong>Potencijal:</strong> {renderText(branislav?.notes?.r2_final_potencijal)}</p>
-          <p><strong>Uklapanje:</strong> {renderText(branislav?.notes?.r2_final_kultura)}</p>
-          <div style={{ marginTop: '1rem', padding: '0.5rem', background: '#f5f5f5' }}>
-            <p style={{ fontWeight: 'bold' }}>AI Analiza:</p>
-            <p style={{ whiteSpace: 'pre-line', fontSize: '0.9em' }}>{renderText(branislav?.notes?.ai_analiza)}</p>
+      <div className="section-title">Finalna Preporuka i Ukupan Utisak</div>
+      <div className="evaluator-comparison">
+        <div className="evaluator-column">
+          <h3>Branislav ({totalScoreB}%)</h3>
+          <p><strong>Najveći klijent:</strong> {renderText(branislav?.notes?.r2_final_najveci_klijent)}</p>
+          <p><strong>Zaposlio danas:</strong> {renderText(branislav?.notes?.r2_final_zaposlio_danas)}</p>
+          <h4>Konačna preporuka</h4>
+          {renderText(branislav?.recommendation)}
+          <h4>Najveće prednosti</h4>
+          {renderText(branislav?.notes?.r2_final_prednosti)}
+          <h4>Najveći rizici</h4>
+          {renderText(branislav?.notes?.r2_final_rizici)}
+          <h4>Potencijal za razvoj</h4>
+          {renderText(branislav?.notes?.r2_final_potencijal)}
+          <h4>Uklapanje u kulturu</h4>
+          {renderText(branislav?.notes?.r2_final_kultura)}
+          <h4>Konačne crvene zastavice</h4>
+          <div className="danger-text">{renderText(branislav?.redFlags?.r2_final_zastavice)}</div>
+          
+          <h4>AI Analiza</h4>
+          <div className="report-text" style={{ fontSize: '11px', background: '#f5f5f5', padding: '5px' }}>
+            {renderText(branislav?.notes?.ai_analiza)}
           </div>
         </div>
-        <div className="summary-col">
-          <h3 style={{ borderBottom: '2px solid #333' }}>Dušan ({totalScoreD}%)</h3>
-          <p><strong>Preporuka:</strong> {renderText(dusan?.recommendation)}</p>
-          <p><strong>Prednosti:</strong> {renderText(dusan?.notes?.r2_final_prednosti)}</p>
-          <p><strong>Rizici:</strong> {renderText(dusan?.notes?.r2_final_rizici)}</p>
-          <p><strong>Crvene zastavice:</strong> {renderText(dusan?.redFlags?.r2_final_zastavice)}</p>
-          <p><strong>Potencijal:</strong> {renderText(dusan?.notes?.r2_final_potencijal)}</p>
-          <p><strong>Uklapanje:</strong> {renderText(dusan?.notes?.r2_final_kultura)}</p>
-          <div style={{ marginTop: '1rem', padding: '0.5rem', background: '#f5f5f5' }}>
-            <p style={{ fontWeight: 'bold' }}>AI Analiza:</p>
-            <p style={{ whiteSpace: 'pre-line', fontSize: '0.9em' }}>{renderText(dusan?.notes?.ai_analiza)}</p>
+        <div className="evaluator-column">
+          <h3>Dušan ({totalScoreD}%)</h3>
+          <p><strong>Najveći klijent:</strong> {renderText(dusan?.notes?.r2_final_najveci_klijent)}</p>
+          <p><strong>Zaposlio danas:</strong> {renderText(dusan?.notes?.r2_final_zaposlio_danas)}</p>
+          <h4>Konačna preporuka</h4>
+          {renderText(dusan?.recommendation)}
+          <h4>Najveće prednosti</h4>
+          {renderText(dusan?.notes?.r2_final_prednosti)}
+          <h4>Najveći rizici</h4>
+          {renderText(dusan?.notes?.r2_final_rizici)}
+          <h4>Potencijal za razvoj</h4>
+          {renderText(dusan?.notes?.r2_final_potencijal)}
+          <h4>Uklapanje u kulturu</h4>
+          {renderText(dusan?.notes?.r2_final_kultura)}
+          <h4>Konačne crvene zastavice</h4>
+          <div className="danger-text">{renderText(dusan?.redFlags?.r2_final_zastavice)}</div>
+          
+          <h4>AI Analiza</h4>
+          <div className="report-text" style={{ fontSize: '11px', background: '#f5f5f5', padding: '5px' }}>
+            {renderText(dusan?.notes?.ai_analiza)}
           </div>
         </div>
       </div>
 
       <div className="page-break"></div>
 
-      <h2>DETALJNE BELEŠKE PO KORACIMA (DRUGI KRUG)</h2>
-      <table className="details-table">
-        <thead>
-          <tr>
-            <th style={{ width: '20%' }}>Korak</th>
-            <th style={{ width: '40%' }}>Branislav</th>
-            <th style={{ width: '40%' }}>Dušan</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>S1 - Iskustvo</strong></td>
-            <td>{renderText(branislav?.notes?.r2_s1)}</td>
-            <td>{renderText(dusan?.notes?.r2_s1)}</td>
-          </tr>
-          <tr>
-            <td><strong>S2 - Prodaja</strong></td>
-            <td>{renderText(branislav?.notes?.r2_s2)}</td>
-            <td>{renderText(dusan?.notes?.r2_s2)}</td>
-          </tr>
-          <tr>
-            <td><strong>S3 - Organizacija</strong></td>
-            <td>{renderText(branislav?.notes?.r2_s3)}</td>
-            <td>{renderText(dusan?.notes?.r2_s3)}</td>
-          </tr>
-          <tr>
-            <td><strong>S4 - Email test</strong></td>
-            <td>{renderText(branislav?.notes?.r2_s4)}</td>
-            <td>{renderText(dusan?.notes?.r2_s4)}</td>
-          </tr>
-          <tr>
-            <td><strong>S5 - Težak klijent</strong></td>
-            <td>{renderText(branislav?.notes?.r2_s5)}</td>
-            <td>{renderText(dusan?.notes?.r2_s5)}</td>
-          </tr>
-          <tr>
-            <td><strong>S6 - Poklon projekat</strong></td>
-            <td>{renderText(branislav?.notes?.r2_s6)}</td>
-            <td>{renderText(dusan?.notes?.r2_s6)}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="section-title">Detaljne beleške po koracima</div>
+      
+      {[
+        { id: 'r2_s1', title: 'S1 - Rekonekcija' },
+        { id: 'r2_s2', title: 'S2 - Ownership test' },
+        { id: 'r2_s3', title: 'S3 - Problem sa štamparom' },
+        { id: 'r2_s4', title: 'S4 - Hladni poziv (Sekretarica)' },
+        { id: 'r2_s5', title: 'S5 - Hladni poziv (Direktor)' },
+        { id: 'r2_s6', title: 'S6 - Prioritizacija' },
+        { id: 'r2_s7', title: 'S7 - Poklon projekat' },
+        { id: 'r2_s8', title: 'S8 - Motivacija' }
+      ].map(step => (
+        <div key={step.id} className="no-break" style={{ marginBottom: '20px' }}>
+          <h3 style={{ borderBottom: '1px solid #ccc', paddingBottom: '5px', marginTop: '20px' }}>{step.title}</h3>
+          
+          <div className="evaluator-comparison" style={{ marginBottom: 0 }}>
+            <div className="evaluator-column" style={{ border: 'none', borderRight: '1px solid #eee', borderRadius: 0, padding: '0 15px 0 0' }}>
+              <strong>Branislav:</strong>
+              {renderText(branislav?.notes?.[step.id])}
+              {branislav?.redFlags?.[step.id] && (
+                <div className="danger-text">
+                  <small>Crvene zastavice:</small><br/>
+                  {branislav.redFlags[step.id]}
+                </div>
+              )}
+            </div>
+            <div className="evaluator-column" style={{ border: 'none', borderRadius: 0, padding: '0 0 0 15px' }}>
+              <strong>Dušan:</strong>
+              {renderText(dusan?.notes?.[step.id])}
+              {dusan?.redFlags?.[step.id] && (
+                <div className="danger-text">
+                  <small>Crvene zastavice:</small><br/>
+                  {dusan.redFlags[step.id]}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
