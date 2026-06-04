@@ -81,16 +81,37 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ candidateId, branislavD
               {branislavData ? (
                 <>
                   <div className="admin-note-box">
-                    <strong>Prvi utisak:</strong> {branislavData.notes.s1 || 'Nema beleški'}
+                    <strong>S1 (Prvi utisak):</strong> {branislavData.notes.s1 || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box">
-                    <strong>Motivacija:</strong> {branislavData.notes.s4 || 'Nema beleški'}
+                    <strong>S3 (O kandidatu):</strong> {branislavData.notes.s3 || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box">
-                    <strong>Krizna situacija:</strong> {branislavData.notes.s9 || 'Nema beleški'}
+                    <strong>S4 (Motivacija):</strong> {branislavData.notes.s4 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S5 (Komunikacija):</strong> {branislavData.notes.s5 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S6 (Organizacija):</strong> {branislavData.notes.s6 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S7 (Pritisak):</strong> {branislavData.notes.s7 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S8 (Admin/CRM):</strong> {branislavData.notes.s8 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S9 (Krizna situacija):</strong> {branislavData.notes.s9 || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box text-danger">
-                    <strong>Crvene zastavice:</strong> {Object.values(branislavData.redFlags).join(', ') || 'Nema zastavica'}
+                    <strong>Crvene zastavice:</strong> {Object.values(branislavData.redFlags).filter(v => v).join(' | ') || 'Nema zastavica'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>Prednosti:</strong> {branislavData.notes.final_prednosti || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>Rizici:</strong> {branislavData.notes.final_rizici || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box">
                     <strong>Ukupan utisak:</strong> <span className="badge badge-primary">{branislavData.recommendation ? (!isNaN(Number(branislavData.recommendation)) ? `${branislavData.recommendation} / 10` : branislavData.recommendation) : 'Nije definisano'}</span>
@@ -107,16 +128,37 @@ const AdminFirstRoundView: React.FC<AdminViewProps> = ({ candidateId, branislavD
               {dusanData ? (
                 <>
                   <div className="admin-note-box">
-                    <strong>Prvi utisak:</strong> {dusanData.notes.s1 || 'Nema beleški'}
+                    <strong>S1 (Prvi utisak):</strong> {dusanData.notes.s1 || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box">
-                    <strong>Motivacija:</strong> {dusanData.notes.s4 || 'Nema beleški'}
+                    <strong>S3 (O kandidatu):</strong> {dusanData.notes.s3 || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box">
-                    <strong>Krizna situacija:</strong> {dusanData.notes.s9 || 'Nema beleški'}
+                    <strong>S4 (Motivacija):</strong> {dusanData.notes.s4 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S5 (Komunikacija):</strong> {dusanData.notes.s5 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S6 (Organizacija):</strong> {dusanData.notes.s6 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S7 (Pritisak):</strong> {dusanData.notes.s7 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S8 (Admin/CRM):</strong> {dusanData.notes.s8 || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>S9 (Krizna situacija):</strong> {dusanData.notes.s9 || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box text-danger">
-                    <strong>Crvene zastavice:</strong> {Object.values(dusanData.redFlags).join(', ') || 'Nema zastavica'}
+                    <strong>Crvene zastavice:</strong> {Object.values(dusanData.redFlags).filter(v => v).join(' | ') || 'Nema zastavica'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>Prednosti:</strong> {dusanData.notes.final_prednosti || 'Nema beleški'}
+                  </div>
+                  <div className="admin-note-box">
+                    <strong>Rizici:</strong> {dusanData.notes.final_rizici || 'Nema beleški'}
                   </div>
                   <div className="admin-note-box">
                     <strong>Ukupan utisak:</strong> <span className="badge badge-primary">{dusanData.recommendation ? (!isNaN(Number(dusanData.recommendation)) ? `${dusanData.recommendation} / 10` : dusanData.recommendation) : 'Nije definisano'}</span>

@@ -55,19 +55,15 @@ const Process: React.FC = () => {
             <button className={`tab-btn ${activeTab === 'prvi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('prvi-krug')}>
               1. Prvi krug (Uživo)
             </button>
-            {currentUser === 'Admin' && (
-              <button className={`tab-btn ${activeTab === 'admin-pregled' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled')}>
-                [ADMIN] Uporedni prikaz ocena
-              </button>
-            )}
+            <button className={`tab-btn ${activeTab === 'admin-pregled' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled')}>
+              Uporedni prikaz - 1. Krug
+            </button>
             <button className={`tab-btn ${activeTab === 'drugi-krug' ? 'active' : ''}`} onClick={() => setActiveTab('drugi-krug')}>
               2. Drugi krug (Napredno)
             </button>
-            {currentUser === 'Admin' && (
-              <button className={`tab-btn ${activeTab === 'admin-pregled-2' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled-2')}>
-                [ADMIN] Uporedni prikaz - 2. Krug
-              </button>
-            )}
+            <button className={`tab-btn ${activeTab === 'admin-pregled-2' ? 'active' : ''}`} onClick={() => setActiveTab('admin-pregled-2')}>
+              Uporedni prikaz - 2. Krug
+            </button>
             <button className={`tab-btn ${activeTab === 'treci-krug' ? 'active' : ''}`} onClick={() => setActiveTab('treci-krug')}>
               3. Probni rad (3-5 dana)
             </button>
@@ -122,7 +118,7 @@ const Process: React.FC = () => {
 
         {activeTab === 'prvi-krug' && <FirstRoundWizard candidateId={candidate.id} />}
         
-        {activeTab === 'admin-pregled' && currentUser === 'Admin' && (
+        {activeTab === 'admin-pregled' && (
           <div className="card" style={{padding: '2rem'}}>
             <AdminFirstRoundViewWrapper candidateId={candidate.id} />
             
@@ -146,7 +142,7 @@ const Process: React.FC = () => {
 
         {activeTab === 'drugi-krug' && <SecondRoundWizard candidateId={candidate.id} />}
 
-        {activeTab === 'admin-pregled-2' && currentUser === 'Admin' && (
+        {activeTab === 'admin-pregled-2' && (
           <div className="card" style={{padding: '2rem'}}>
             <AdminSecondRoundViewWrapper candidateId={candidate.id} />
           </div>
