@@ -182,7 +182,7 @@ export default function SecondRoundWizard({ candidateId }: { candidateId: string
             className={`star-btn ${scores[key] === num ? 'active' : ''}`}
             onClick={() => handleScore(key, num)}
           >
-            {num}
+            ★ {num}
           </button>
         ))}
       </div>
