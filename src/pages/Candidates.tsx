@@ -95,7 +95,8 @@ const Candidates: React.FC = () => {
                 <th>Kontakt</th>
                 <th>Status</th>
                 <th>Score</th>
-                <th>Zakazan razgovor</th>
+                <th>1. Krug</th>
+                <th>2. Krug</th>
                 <th>Datum prijave</th>
                 <th>Akcije</th>
               </tr>
@@ -154,7 +155,18 @@ const Candidates: React.FC = () => {
                           {new Date(c.interviewDate).toLocaleString('sr-RS', { dateStyle: 'short', timeStyle: 'short' })}
                         </span>
                       ) : (
-                        <span style={{ color: 'var(--color-text-muted)' }}>Nije zakazano</span>
+                        <span style={{ color: 'var(--text-muted)' }}>-</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="source-cell">
+                      {c.secondRoundDate ? (
+                        <span style={{ fontWeight: 500, color: '#10b981' }}>
+                          {new Date(c.secondRoundDate).toLocaleString('sr-RS', { dateStyle: 'short', timeStyle: 'short' })}
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }}>-</span>
                       )}
                     </div>
                   </td>

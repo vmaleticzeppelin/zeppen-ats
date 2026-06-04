@@ -12,7 +12,7 @@ interface AddCandidateModalProps {
 const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, onSave, initialData }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', address: '', birthDate: ''
+    name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', secondRoundDate: '', address: '', birthDate: '', status: 'Novi kandidat'
   });
 
   React.useEffect(() => {
@@ -25,11 +25,13 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
           source: initialData.source || 'LinkedIn',
           cvUrl: initialData.cvUrl || '',
           interviewDate: initialData.interviewDate || '',
+          secondRoundDate: initialData.secondRoundDate || '',
           address: initialData.address || '',
-          birthDate: initialData.birthDate || ''
+          birthDate: initialData.birthDate || '',
+          status: initialData.status || 'Novi kandidat'
         });
       } else {
-        setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', address: '', birthDate: '' });
+        setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', secondRoundDate: '', address: '', birthDate: '', status: 'Novi kandidat' });
       }
       setStep(1);
     }
@@ -39,21 +41,22 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
 
   const handleSave = () => {
     onSave({
-      ...(initialData ? { id: initialData.id, status: initialData.status, score: initialData.score, appliedDate: initialData.appliedDate } : {
-        status: 'Neocenjen',
+      ...(initialData ? { id: initialData.id, score: initialData.score, appliedDate: initialData.appliedDate } : {
         score: null,
         appliedDate: new Date().toLocaleDateString('sr-RS'),
       }),
+      status: formData.status,
       name: formData.name || 'Novi Kandidat',
       email: formData.email || '-',
       phone: formData.phone || '-',
       source: formData.source,
       cvUrl: formData.cvUrl,
       interviewDate: formData.interviewDate,
+      secondRoundDate: formData.secondRoundDate,
       address: formData.address,
       birthDate: formData.birthDate
     });
-    setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', address: '', birthDate: '' });
+    setFormData({ name: '', email: '', phone: '', source: 'LinkedIn', cvUrl: '', interviewDate: '', secondRoundDate: '', address: '', birthDate: '', status: 'Novi kandidat' });
     setStep(1);
     onClose();
   };
@@ -69,6 +72,17 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
         <div className="modal-body">
           {step === 1 && (
             <div className="modal-form-grid">
+              <div className="input-group">
+                <label>Status</label>
+                <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}>
+                  <option value="Novi kandidat">Novi kandidat</option>
+                  <option value="Prvi krug">Prvi krug</option>
+                  <option value="Drugi krug">Drugi krug</option>
+                  <option value="Probni rad">Probni rad</option>
+                  <option value="Zaposlen">Zaposlen</option>
+                  <option value="Odbijen">Odbijen</option>
+                </select>
+              </div>
               <div className="input-group">
                 <label>Ime i Prezime *</label>
                 <input type="text" placeholder="Unesite ime i prezime" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
@@ -90,8 +104,12 @@ const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ isOpen, onClose, 
                 <input type="date" value={formData.birthDate} onChange={e => setFormData({...formData, birthDate: e.target.value})} />
               </div>
               <div className="input-group">
-                <label>Zakazan razgovor (Datum i vreme)</label>
+                <label>Zakazan 1. krug</label>
                 <input type="datetime-local" value={formData.interviewDate} onChange={e => setFormData({...formData, interviewDate: e.target.value})} />
+              </div>
+              <div className="input-group">
+                <label>Zakazan 2. krug</label>
+                <input type="datetime-local" value={formData.secondRoundDate} onChange={e => setFormData({...formData, secondRoundDate: e.target.value})} />
               </div>
               
               <div className="input-group full-width">

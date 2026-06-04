@@ -15,6 +15,7 @@ export interface Candidate {
   cvUrl?: string;
   notes?: string;
   interviewDate?: string;
+  secondRoundDate?: string;
   address?: string;
   birthDate?: string;
 }
